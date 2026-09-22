@@ -1,0 +1,447 @@
+import { Herb } from '../types';
+
+export const HERBS_DATA: Herb[] = [
+  {
+    id: 'zingiber-officinale',
+    scientificName: 'Zingiber officinale',
+    myanmarName: 'ချင်း',
+    englishName: 'Ginger Root',
+    pharmaceuticalPart: 'Rhizoma Zingiberis',
+    pharmaceuticalPartMy: 'ဥတက်ပိုင်း (Rhizome)',
+    category: 'digestive',
+    tags: ['Digestant', 'Anti-inflammatory'],
+    tagsMy: ['အစာကြေဆေး', 'ရောင်ရမ်းကျဆေး', 'အပူပေးဆေး'],
+    description: 'Relieves acute gastrointestinal nausea, expels respiratory phlegm, and enhances peripheral thermal circulation.',
+    myanmarDescription: 'အစာမကြေ လေထိုးလေအောင့်သက်သာစေပြီး အဆုတ်တွင်း သလိပ်ကင်းစင်စေကာ သွေးလည်ပတ်မှု ကောင်းမွန်စေပါသည်။',
+    dosage: 'Decoction: 5-10g boiled. Avoid excessive intake during active ulcer flare-ups.',
+    dosageMy: 'ပြုတ်ရည် - ချင်း ၅ ဂရမ် မှ ၁၀ ဂရမ်ခန့်ကို ပြုတ်၍ သောက်သုံးပါ။ ပြင်းထန် အစာအိမ်အနာ ဖြစ်နေချိန်တွင် အလွန်အကျွံ သောက်သုံးခြင်းမှ ရှောင်ကြဉ်ပါ။',
+    preparation: 'Fresh rhizome crushed for hot decoction with honey or sliced thinly for digestive tea infusions.',
+    preparationMy: 'ချင်းလတ်လတ်ဆတ်ဆတ်ကို ထုထောင်း၍ ပျားရည်နှင့် ရောစပ်ကျိုချက်သောက်သုံးပါ သို့မဟုတ် ပါးပါးလှီး၍ ရေနွေးကြမ်းကဲ့သို့ စိမ်သောက်ပါ။',
+    clinicalIndication: 'Antiemetic efficacy validated in pregnancy nausea and chemotherapy-induced nausea. Caution with anticoagulants.',
+    clinicalIndicationMy: 'ကိုယ်ဝန်ဆောင် ပျို့အန်ခြင်းနှင့် ဆေးသွင်းကုသမှုကြောင့် ပျို့အန်ခြင်းတို့ကို သက်သာစေကြောင်း လက်တွေ့ဆေးပညာ သက်သေပြပြီး ဖြစ်ပါသည်။',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCXZ_tF5IqJxwiggMS7IPP4qhSwCyyS6WKl3d3-gN7FtBaUEf-J4n4zIMwHS-6eQjpW8eT7OLeJhDf41x9YGq-twoRiXUC64j_OFqBm4KjXXZYtFgYwKmzCyf3DiIlq1AmdBof21oHOM1PCeK_sR5WoSWkuD79VhOE7K8MadwAOT_mBVhxDsSNP0SMH8zKYBnrz3J97vk6nJtVnXJdlW-3QoIKbFI7uip0Pe-ZKlYp-nYHk8qhxwypf',
+    activeCompounds: ['6-Gingerol', '6-Shogaol', 'Zingiberene', 'Bisabolene'],
+    activeCompoundsMy: ['ဂျင်ဂျာရောလ် (Gingerol)', 'ရှိုဂါအောလ် (Shogaol)', 'ဇင်ဂျီဘာရင်း (Zingiberene)', 'ဘီဆာဘိုလင်း (Bisabolene)'],
+    traditionalUses: [
+      'Carminative relief for acute abdominal colic and bloating',
+      'Diaphoretic warming remedy for seasonal chills and phlegmatic cough',
+      'Peripheral circulatory stimulant for cold extremities'
+    ],
+    traditionalUsesMy: [
+      'လေထိုး လေအောင့်နှင့် ဗိုက်ကယ်ဗိုက်နာခြင်းကို ချက်ချင်း သက်သာစေခြင်း',
+      'ရာသီအကူးအပြောင်း ဖျားနာ ချမ်းစိမ့်ခြင်းနှင့် သလိပ်ကပ် ချောင်းဆိုးခြင်းအတွက် သွေးနွေးစေခြင်း',
+      'လက်ဖျားခြေဖျား အေးစက်ခြင်းအတွက် သွေးလှည့်ပတ်မှု အားကောင်းစေခြင်း'
+    ],
+    contraindications: [
+      'Active gastric and peptic ulcerative lesions during acute bleeding phase',
+      'Concurrent high-dose anticoagulant therapy (warfarin/aspirin) without monitoring'
+    ],
+    contraindicationsMy: [
+      'ပြင်းထန် အစာအိမ်သွေးယို အနာရှိသူများ အလွန်အကျွံ မသောက်သုံးသင့်ပါ',
+      'သွေးကျဲဆေး (Warfarin, Aspirin) သောက်သုံးနေသူများ ဆရာဝန်နှင့် တိုင်ပင်ပါ'
+    ],
+    chemicalFamily: 'Zingiberaceae',
+    chemicalFamilyMy: 'ချင်းမျိုးရင်း (Zingiberaceae)',
+    verified: true,
+  },
+  {
+    id: 'azadirachta-indica',
+    scientificName: 'Azadirachta indica',
+    myanmarName: 'တမာ',
+    englishName: 'Neem Tree',
+    pharmaceuticalPart: 'Folia Azadirachtae',
+    pharmaceuticalPartMy: 'တမာရွက်နှင့် အခေါက် (Leaves & Bark)',
+    category: 'antimicrobial',
+    tags: ['Detoxifier', 'Antiseptic'],
+    tagsMy: ['သွေးသန့်ဆေး', 'ပိုးသတ်ဆေး', 'အဖျားကျဆေး'],
+    description: 'Purifies systemic blood, treats cutaneous dermatitis, and provides potent antipyretic cooling properties during heat fevers.',
+    myanmarDescription: 'သွေးသန့်စင်စေခြင်း၊ အရေပြားယားယံနာများ သက်သာစေခြင်းနှင့် အပူဖျားများကို အေးမြစေခြင်းတို့အတွက် ထိရောက်မှုရှိပါသည်။',
+    dosage: 'Boiled leaf infusion or crushed fresh leaf poultice for topical skin lesions.',
+    dosageMy: 'အရွက်ပြုတ်ရည်ကို အပြင်ပိုင်းဆေးကြောရန် သို့မဟုတ် အရွက်နု ၃-၅ ရွက်ကို ရေနွေးစိမ်သောက်ပါ။',
+    preparation: 'Boiled leaf water for external skin rinse or 3-5 young leaf tips brewed as bitter tea.',
+    preparationMy: 'တမာရွက်ကို ရေနွေးဆူဆူတွင် ပြုတ်၍ အရေပြားဆေးကြောရန် သို့မဟုတ် အရွက်နု အနည်းငယ်ကို လက်ဖက်ရည်ကြမ်းကဲ့သို့ သောက်သုံးပါ။',
+    clinicalIndication: 'Demonstrated antimicrobial action against Staphylococcus aureus and Malassezia fungal strains.',
+    clinicalIndicationMy: 'ဘက်တီးရီးယား (Staphylococcus aureus) နှင့် မှိုပိုးများကို တိုက်ဖျက်နိုင်စွမ်းရှိကြောင်း အတည်ပြုထားပါသည်။',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC5byC1dVuyxD3SY91CSBcStw2X-PTYjdqOzjaNUNLV_t4worxCo0dD838qrZ1yEbP_-a7mJCi3b3WHkw4HlPC-kO5nbBG_eZjJgcpCP9NiSQSuou4utDcF6OdTDYYx0OJ57Cdr_Apsi7CYbaOP9i0OiqLQu9muDAuXjfQMpVJ60ngJcp7VsVre4Uz_yKtPV9oBmNe8D7rx7bCYm4CnDaFjBavbMhRbhYjzWqKs7kGrajzdim1ESfjy',
+    activeCompounds: ['Azadirachtin', 'Nimbin', 'Nimbidol', 'Quercetin'],
+    activeCompoundsMy: ['အာဇာဒီရက်တင် (Azadirachtin)', 'နင်ဘင် (Nimbin)', 'ကွာစီတင် (Quercetin)'],
+    traditionalUses: [
+      'Detoxifying cooling wash for pustular eczema and scabies',
+      'Antipyretic bitter tonic for tropical malaria fevers',
+      'Natural mouthwash and gingival antimicrobial rinse'
+    ],
+    traditionalUsesMy: [
+      'ယားနာ၊ ပွေး၊ ဝဲ၊ နှင်းခူနှင့် အပူဖုများအတွက် သွေးသန့် အအေးဆေးအဖြစ် သုံးစွဲခြင်း',
+      'ငှက်ဖျားနှင့် အပူဖျားများတွင် အပူကျ ခါးသက်သက် ဆေးရည်အဖြစ် အသုံးပြုခြင်း',
+      'သွားဖုံးရောင်ခြင်းနှင့် ခံတွင်းပိုးသတ်ဆေးရည်အဖြစ် ပလုတ်ကျင်းခြင်း'
+    ],
+    contraindications: [
+      'Internal consumption contraindicated in early pregnancy and infants',
+      'Excessive chronic intake may cause hepatic overload'
+    ],
+    contraindicationsMy: [
+      'ကိုယ်ဝန်ဆောင်မိခင်များနှင့် နို့တိုက်မိခင်များ၊ ကလေးငယ်များ အတွင်းစားဆေးအဖြစ် မသောက်သုံးရပါ',
+      'ကာလရှည် အလွန်အကျွံ သောက်သုံးပါက အသည်းနှင့် ကျောက်ကပ်ကို ဝန်ပိစေနိုင်ပါသည်'
+    ],
+    chemicalFamily: 'Meliaceae',
+    chemicalFamilyMy: 'တမာမျိုးရင်း (Meliaceae)',
+    verified: true,
+  },
+  {
+    id: 'ocimum-tenuiflorum',
+    scientificName: 'Ocimum tenuiflorum',
+    myanmarName: 'ပင်စိမ်း',
+    englishName: 'Holy Basil / Tulsi',
+    pharmaceuticalPart: 'Herba Sancti Basilici',
+    pharmaceuticalPartMy: 'အရွက်နှင့် ပင်စည်နု (Herb)',
+    category: 'adaptogen',
+    tags: ['Adaptogen', 'Cold Relief'],
+    tagsMy: ['အအေးမိသက်သာ', 'ကိုယ်ခံအားမြှင့်', 'အဆုတ်အားတိုး'],
+    description: 'Soothes persistent dry coughs, enhances immune cellular vitality, and eases mental fatigue and cephalic tension.',
+    myanmarDescription: 'ချောင်းခြောက်ဆိုးခြင်းကို သက်သာစေပြီး ကိုယ်ခံစွမ်းအား မြှင့်တင်ပေးကာ စိတ်ဖိစီးမှုနှင့် ခေါင်းကိုက်ခြင်းကို လျှော့ချပေးပါသည်။',
+    dosage: 'Fresh leaf tea infusion twice daily with wild honey for bronchospasm.',
+    dosageMy: 'လတ်ဆတ်သော အရွက်ကို ရေနွေးစိမ်၍ ပျားရည်နှင့် ရောစပ်ကာ တစ်နေ့ ၂ ကြိမ် သောက်သုံးပါ။',
+    preparation: 'Steep 8-10 freshly gathered leaves in boiling water for 7 minutes; strain and ingest warm.',
+    preparationMy: 'ပင်စိမ်းရွက် ၈-၁၀ ရွက်ကို ရေနွေးဆူဆူတွင် ၇ မိနစ်ခန့် စိမ်ပြီး နွေးနွေးလေး သောက်သုံးပါ။',
+    clinicalIndication: 'Potent eugenol-mediated COX-2 down-regulation and bronchodilatory smooth muscle relaxation.',
+    clinicalIndicationMy: 'လေပြွန်ကြွက်သားများကို ပြေလျော့စေပြီး ချောင်းဆိုးခြင်းကို သက်သာစေသည့် အာနိသင်ရှိပါသည်။',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCUfmDTT82fKIWzj5gm0L3LFJjaR8GmfcT_6Oxa6efBc7ZDZqVpmIYhbwZYYDK7NZeTwYKndKcg858iZBtjHYh_cV0JaBKYUyLKRLtNGUFwCMWfQa1SPN546doUVVrz_LqdM1lbltUV3UU5gARqSXBB80S2R3wUDB6ZOayuYAPMzH9m0CSWQ7jsUZVED6mCxi2s2jdgl873Dbanup8BAYzsDSnv0Yx9RdpOfy1Eg4426Xc3VFTxXYQz',
+    activeCompounds: ['Eugenol', 'Ursolic Acid', 'Rosmarinic Acid', 'Caryophyllene'],
+    activeCompoundsMy: ['ယူဂျီနောလ် (Eugenol)', 'အာဆိုလစ်အက်ဆစ် (Ursolic Acid)', 'ရိုစမာရီနစ်အက်ဆစ် (Rosmarinic Acid)'],
+    traditionalUses: [
+      'Upper respiratory bronchodilation and anti-tussive decoction',
+      'Adaptogenic balance against environmental and metabolic stressors',
+      'Topical antimicrobial paste for insect stings and minor rashes'
+    ],
+    traditionalUsesMy: [
+      'အသက်ရှူလမ်းကြောင်း ချောင်းခြောက်ဆိုးခြင်းနှင့် လည်ချောင်းနာ သက်သာစေခြင်း',
+      'စိတ်ဖိစီးမှုနှင့် ပင်ပန်းနွမ်းနယ်မှုကို လျှော့ချပေးပြီး ကိုယ်ခံစွမ်းအား မြှင့်တင်ပေးခြင်း',
+      'ပိုးမွှားကိုက်ခံရသည့် အဖုအပိမ့်များအတွက် ကြိတ်ခြေလိမ်းကျံခြင်း'
+    ],
+    contraindications: [
+      'Concurrent anticoagulant use due to mild platelet inhibition of eugenol',
+      'Pre-surgery withdrawal 2 weeks prior'
+    ],
+    contraindicationsMy: [
+      'သွေးခဲမှုကို နှေးစေနိုင်သဖြင့် သွေးကျဲဆေး သောက်နေသူများ သတိပြုရန်',
+      'ခွဲစိတ်မှု မပြုလုပ်မီ ၂ ပတ်အလိုတွင် သောက်သုံးမှု ရပ်နားရန်'
+    ],
+    chemicalFamily: 'Lamiaceae',
+    chemicalFamilyMy: 'ပင်စိမ်းမျိုးရင်း (Lamiaceae)',
+    verified: true,
+  },
+  {
+    id: 'curcuma-longa',
+    scientificName: 'Curcuma longa',
+    myanmarName: 'နနွင်း',
+    englishName: 'Turmeric',
+    pharmaceuticalPart: 'Rhizoma Curcumae',
+    pharmaceuticalPartMy: 'နနွင်းတက် (Rhizome)',
+    category: 'anti-inflammatory',
+    tags: ['Wound Healing', 'Antioxidant'],
+    tagsMy: ['အနာကျက်ဆေး', 'ရောင်ရမ်းကျဆေး', 'ဓာတ်တိုးဆန့်ကျင်'],
+    description: 'Reduces articular joint inflammation, accelerates wound healing, and supports biliary hepatic detox pathways.',
+    myanmarDescription: 'အဆစ်အမြစ်ရောင်ရမ်းနာများ သက်သာစေခြင်း၊ ဒဏ်ရာအနာကျက်မြန်စေခြင်းနှင့် အသည်းကျန်းမာရေးကို ထောက်ပံ့ပေးပါသည်။',
+    dosage: 'Combine with black pepper (piperine) for 2000% increased bioavailability.',
+    dosageMy: 'နနွင်းမှုန့် ၁-၃ ဂရမ်ကို နွားနို့နွေးနွေး သို့မဟုတ် ငရုတ်ကောင်းစေ့ အနည်းငယ်နှင့် တွဲဖက်သောက်သုံးပါ။',
+    preparation: 'Micro-milled rhizome powder: 1-3g daily taken in warm milk or applied topically as purified antiseptic paste.',
+    preparationMy: 'နနွင်းမှုန့်စစ်စစ်ကို နို့နွေးနွေးတွင် ရောစပ်သောက်သုံးပါ သို့မဟုတ် အုန်းဆီနှင့် ရော၍ ဒဏ်ရာပေါ် လိမ်းပေးပါ။',
+    clinicalIndication: 'Standardized curcuminoids verified in clinical trials for knee osteoarthritis symptom mitigation.',
+    clinicalIndicationMy: 'ဒူးဆစ်ရိုးအဆစ်ရောင် ရောဂါဝေဒနာရှင်များတွင် ရောင်ရမ်းကိုက်ခဲမှု သိသိသာသာ လျော့ပါးစေကြောင်း စမ်းသပ်အတည်ပြုထားပါသည်။',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDV2Smz9HvQAQ42sfX86dh457Z03XETRn0ZJBZUZfXYj7Ki60QWPISR3lzgmQY4fidiFbFKTMdoIQwZrE_lKaSUWP-U3nwirRogJWJRPP1E1Lm7yn3HCClGTkAJ1Kcho4KhHWXOafLoGuleTsQQKxRmz3ZsR3embhHSoPMyUxdmEljk4bpEs4lIBORkE6R9oP72xVHllHA6ksvIe5CG0i9nJk5_ILVlE7g7RT6pIZE0RoxWjzN_kdif',
+    activeCompounds: ['Curcumin', 'DMC', 'BDMC', 'Turmerone'],
+    activeCompoundsMy: ['ကာကူမင် (Curcumin)', 'တာမာရုန်း (Turmerone)'],
+    traditionalUses: [
+      'Topical antimicrobial dressing for sterile wound drying and tissue granulation',
+      'Systemic anti-arthritic remedy for painful swollen joints',
+      'Hepato-protective stimulant for sluggish bile secretion'
+    ],
+    traditionalUsesMy: [
+      'ဒဏ်ရာအနာတရများ ပိုးမဝင်စေရန်နှင့် အသားနုတက်မြန်စေရန် အပြင်လိမ်းဆေးအဖြစ် သုံးခြင်း',
+      'အဆစ်အမြစ်ရောင်ရမ်း ကိုက်ခဲခြင်းအတွက် သောက်သုံးခြင်း',
+      'သည်းခြေရည်ထွက်မှုနှင့် အသည်းလုပ်ဆောင်ချက်ကို အားပေးခြင်း'
+    ],
+    contraindications: [
+      'Biliary duct obstruction or symptomatic gallstone colic',
+      'High doses combined with prescription blood thinners'
+    ],
+    contraindicationsMy: [
+      'သည်းခြေပြွန်ပိတ်ဆို့နေသူများနှင့် သည်းခြေကျောက်တည်နေသူများ မသောက်သုံးသင့်ပါ',
+      'သွေးကျဲဆေးများနှင့် တွဲဖက်သောက်သုံးပါက သွေးထွက်လွယ်စေနိုင်ပါသည်'
+    ],
+    chemicalFamily: 'Zingiberaceae',
+    chemicalFamilyMy: 'ချင်းမျိုးရင်း (Zingiberaceae)',
+    verified: true,
+  },
+  {
+    id: 'aloe-vera',
+    scientificName: 'Aloe barbadensis miller',
+    myanmarName: 'ရှားစောင်းလက်ပပ်',
+    englishName: 'Aloe Vera',
+    pharmaceuticalPart: 'Gel Aloe & Folia',
+    pharmaceuticalPartMy: 'အတွင်းအသားဂျယ်လ် (Gel & Leaves)',
+    category: 'anti-inflammatory',
+    tags: ['Burn Recovery', 'Hydration'],
+    tagsMy: ['မီးလောင်ဒဏ်ရာ', 'အသားအရေထိန်း', 'အအေးပေးဆေး'],
+    description: 'Fresh inner parenchyma gel accelerates epidermal re-epithelialization in first and second-degree thermal burns and solar erythema.',
+    myanmarDescription: 'မီးလောင်ဒဏ်ရာနှင့် နေလောင်ဒဏ်ရာများတွင် ဆဲလ်အသစ်ဖြစ်ပေါ်မှုကို အားပေးပြီး အအေးဓာတ်ပေးစွမ်းပါသည်။',
+    dosage: 'Topical: Apply sterile inner clear fillet 3 times daily to intact or superficial burns.',
+    dosageMy: 'အရေပြားပေါ်တွင် သန့်စင်ထားသော ဂျယ်လ်အသားကို တစ်နေ့ ၃ ကြိမ် သုတ်လိမ်းပေးပါ။',
+    preparation: 'Peel outer green rind and wash yellow aloin latex completely before utilizing pure hydrogel.',
+    preparationMy: 'အပြင်ခွံစိမ်းကို ခွာပြီး အဝါရောင်အစေးများ ကုန်စင်အောင် ရေဖြင့် သေချာဆေးကြောပြီးမှ အတွင်းကြည်လင်သော ဂျယ်လ်ကို အသုံးပြုပါ။',
+    clinicalIndication: 'Acemannan mucopolysaccharides accelerate fibroblast proliferation and collagen synthesis.',
+    clinicalIndicationMy: 'တစ်ရှူးဆဲလ်သစ်များ ဖြစ်ပေါ်မှုကို အရှိန်မြှင့်တင်ပေးပြီး ကော်လာဂျင်ထုတ်လုပ်မှုကို အားပေးပါသည်။',
+    imageUrl: 'https://images.unsplash.com/photo-1596547609652-9cf5d8d76921?auto=format&fit=crop&w=800&q=80',
+    activeCompounds: ['Acemannan', 'Aloin', 'Bradykinase', 'Salicylic Acid'],
+    activeCompoundsMy: ['အဆီမန်းနန် (Acemannan)', 'အေလိုအင် (Aloin)', 'ဆာလီဆီလစ်အက်ဆစ် (Salicylic Acid)'],
+    traditionalUses: ['Thermal burn soothing', 'Cutaneous moisture retention', 'Sunburn cooling'],
+    traditionalUsesMy: [
+      'မီးလောင်၊ ရေနွေးပူလောင် ဒဏ်ရာများတွင် အပူလောင်ခြင်း သက်သာစေခြင်း',
+      'နေလောင်ကွက်များနှင့် အရေပြားခြောက်သွေ့ယားယံခြင်းကို အစိုဓာတ်ဖြည့်ပေးခြင်း',
+      'အပူကန်ခြင်းနှင့် ခေါင်းပူခြင်းအတွက် ဦးခေါင်းတွင် ကပ်ပေးခြင်း'
+    ],
+    contraindications: ['Do not apply unwashed bitter yellow latex to open broken skin'],
+    contraindicationsMy: [
+      'မဆေးကြောရသေးသော အဝါရောင်အစေးကို ပွင့်နေသော ဒဏ်ရာပေါ် တိုက်ရိုက်မလိမ်းပါနှင့်',
+      'အတွင်းသောက်ဆေးအဖြစ် သောက်သုံးပါက အလွန်အကျွံ မသောက်သင့်ပါ (ဝမ်းပျော့စေနိုင်သည်)'
+    ],
+    chemicalFamily: 'Asphodelaceae',
+    chemicalFamilyMy: 'ရှားစောင်းမျိုးရင်း (Asphodelaceae)',
+    verified: true,
+  },
+  {
+    id: 'centella-asiatica',
+    scientificName: 'Centella asiatica',
+    myanmarName: 'မြင်းခွာရွက်',
+    englishName: 'Gotu Kola / Asiatic Pennywort',
+    pharmaceuticalPart: 'Herba Centellae',
+    pharmaceuticalPartMy: 'တစ်ပင်လုံး (Whole Herb)',
+    category: 'circulatory',
+    tags: ['Cognitive Vitality', 'Venous Health'],
+    tagsMy: ['မှတ်ဉာဏ်တိုး', 'သွေးကြောကျန်းမာ', 'အသက်ရှည်ဆေး'],
+    description: 'Revered tonic in Myanmar traditional medicine for brain revitalization, memory enhancement, and microcirculatory integrity.',
+    myanmarDescription: 'မှတ်ဉာဏ်ကောင်းမွန်စေခြင်း၊ သွေးကြောငယ်များ ကျန်းမာစေခြင်းနှင့် အာရုံကြော အားသစ်လောင်းစေပါသည်။',
+    dosage: '10-20ml fresh crushed leaf juice or dietary soup consumed 3-4 times per week.',
+    dosageMy: 'လတ်ဆတ်သော အရွက်ရည် ၁၀-၂၀ မီလီလီတာ သို့မဟုတ် တစ်ပတ်လျှင် ၃-၄ ကြိမ် ဟင်းချိုချက်သောက်ပါ။',
+    preparation: 'Macerate fresh whole leaves into raw green extract or blend into traditional culinary herbal soup.',
+    preparationMy: 'အရွက်လတ်လတ်ဆတ်ဆတ်ကို ထောင်း၍ သတ္တုရည်ညှစ်သောက်ပါ သို့မဟုတ် ရိုးရာဟင်းခါး ချက်ပြုတ်စားသုံးပါ။',
+    clinicalIndication: 'Asiaticoside and madecassoside stimulate type I collagen synthesis in vascular endothelia.',
+    clinicalIndicationMy: 'သွေးကြောနံရံများ ကြံ့ခိုင်မှုကို အထောက်အကူပြုပြီး အာရုံကြောဆဲလ်များကို ပြန်လည်နိုးကြားစေပါသည်။',
+    imageUrl: 'https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?auto=format&fit=crop&w=800&q=80',
+    activeCompounds: ['Asiaticoside', 'Madecassoside', 'Asiatic Acid', 'Madecassic Acid'],
+    activeCompoundsMy: ['အေးရှားတီကိုဆိုက် (Asiaticoside)', 'မဒီကက်ဆိုဆိုက် (Madecassoside)'],
+    traditionalUses: ['Cerebral circulation tonic', 'Chronic venous insufficiency', 'Longevity restorative'],
+    traditionalUsesMy: [
+      'ဦးနှောက်မှတ်ဉာဏ် အားကောင်းစေခြင်းနှင့် အာရုံကြောအားတိုးစေခြင်း',
+      'သွေးပြန်ကြောဖောင်းခြင်းနှင့် သွေးကြောငယ်များ သန်မာစေခြင်း',
+      'အသက်ရှည်ကျန်းမာစေသော အာဟာရဟင်းခါးအဖြစ် စားသုံးခြင်း'
+    ],
+    contraindications: ['High concentrated doses should be avoided during pregnancy'],
+    contraindicationsMy: [
+      'ကိုယ်ဝန်ဆောင်ချိန်တွင် ပြင်းအားမြင့် သတ္တုရည် အလွန်အကျွံ သောက်သုံးခြင်း မပြုသင့်ပါ'
+    ],
+    chemicalFamily: 'Apiaceae',
+    chemicalFamilyMy: 'မြင်းခွာမျိုးရင်း (Apiaceae)',
+    verified: true,
+  },
+  {
+    id: 'piper-betle',
+    scientificName: 'Piper betle',
+    myanmarName: 'ကွမ်းရွက်',
+    englishName: 'Betel Leaf',
+    pharmaceuticalPart: 'Folia Piperis Betle',
+    pharmaceuticalPartMy: 'ကွမ်းရွက် (Leaves)',
+    category: 'respiratory',
+    tags: ['Expectorant', 'Antiseptic Poultice'],
+    tagsMy: ['ချွဲသလိပ်ကျေ', 'ပိုးသတ်ဆေး', 'အပူပေးကပ်ဆေး'],
+    description: 'Warmed leaves with sesame oil applied to infantile chest relieve catarrhal chest congestion and bronchial wheezing.',
+    myanmarDescription: 'ရင်ကျပ်ချွဲသံများအတွက် နှမ်းဆီသုတ်၍ မီးကင်ပြီး ရင်ဘတ်တွင် ကပ်ပေးခြင်းဖြင့် သက်သာစေပါသည်။',
+    dosage: 'Topical poultice warmed gently, or 2-3 leaves infused as hot gargle for throat infections.',
+    dosageMy: 'အပြင်ပိုင်းကပ်ဆေးအဖြစ် နှမ်းဆီဖြင့် မီးကင်ကပ်ပါ သို့မဟုတ် အရွက် ၂-၃ ရွက်ကို ရေနွေးဖျော၍ ပလုတ်ကျင်းပါ။',
+    preparation: 'Warm fresh clean leaves lightly over low heat with pure sesame oil and apply warm to chest.',
+    preparationMy: 'သန့်စင်သော ကွမ်းရွက်ကို နှမ်းဆီသုတ်၍ မီးငွေ့ငွေ့ဖြင့် ကင်ကာ ရင်ဘတ်ပေါ် နွေးနွေးလေး ကပ်ပေးပါ။',
+    clinicalIndication: 'Chavibetol and hydroxychavicol demonstrate broad-spectrum respiratory antibacterial activity.',
+    clinicalIndicationMy: 'အသက်ရှူလမ်းကြောင်းဆိုင်ရာ ဘက်တီးရီးယားပိုးများကို သိသာစွာ တားဆီးကာကွယ်ပေးနိုင်ပါသည်။',
+    imageUrl: 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?auto=format&fit=crop&w=800&q=80',
+    activeCompounds: ['Chavibetol', 'Eugenol', 'Chavicol', 'Hydroxychavicol'],
+    activeCompoundsMy: ['ချာဗီဘီတောလ် (Chavibetol)', 'ယူဂျီနောလ် (Eugenol)', 'ဟိုက်ဒရောက်ဆီချာဗီကောလ် (Hydroxychavicol)'],
+    traditionalUses: ['Pediatric chest phlegm poultice', 'Oral cavity disinfectant', 'Fungal ringworm wash'],
+    traditionalUsesMy: [
+      'ကလေးငယ်များ ရင်ကျပ်ချွဲသံထွက်ခြင်းအတွက် နှမ်းဆီသုတ် မီးကင် ကပ်ပေးခြင်း',
+      'လည်ချောင်းနာခြင်းနှင့် ခံတွင်းနံ့ဆိုးခြင်းအတွက် ရေနွေးစိမ် ပလုတ်ကျင်းခြင်း',
+      'အရေပြားမှိုပိုးနှင့် ပွေးညှင်းအတွက် ကြိတ်ခြေကပ်ခြင်း'
+    ],
+    contraindications: ['Do not swallow raw areca nut combinations; use pure leaf only'],
+    contraindicationsMy: [
+      'ကွမ်းသီး၊ ထုံး၊ ဆေးရွက်ကြီးတို့နှင့် ရောနှော၍ မဝါးစားရပါ (ဆေးဖက်ဝင် ကွမ်းရွက်သီးသန့်သာ အသုံးပြုပါ)'
+    ],
+    chemicalFamily: 'Piperaceae',
+    chemicalFamilyMy: 'ကွမ်းမျိုးရင်း (Piperaceae)',
+    verified: true,
+  },
+  {
+    id: 'allium-sativum',
+    scientificName: 'Allium sativum',
+    myanmarName: 'ကြက်သွန်ဖြူ',
+    englishName: 'Garlic',
+    pharmaceuticalPart: 'Bulbus Allii',
+    pharmaceuticalPartMy: 'ဥဥမွှာ (Bulb / Cloves)',
+    category: 'circulatory',
+    tags: ['Cardiovascular', 'Antihypertensive'],
+    tagsMy: ['သွေးတိုးကျ', 'နှလုံးသွေးကြော', 'ပိုးသတ်ဆေး'],
+    description: 'Lowers systemic arterial pressure, inhibits platelet aggregation, and exerts potent antimicrobial activity against enteric pathogens.',
+    myanmarDescription: 'သွေးတိုးကျစေခြင်း၊ သွေးခဲခြင်းကို ကာကွယ်ပေးခြင်းနှင့် အစာလမ်းကြောင်း ပိုးမွှားများကို သေစေပါသည်။',
+    dosage: '1-2 fresh raw crushed cloves daily with food; allow 10 mins post-crushing for allicin activation.',
+    dosageMy: 'ကြက်သွန်ဖြူ အစိမ်း ၁-၂ မြွှာကို ထောင်းပြီး ၁၀ မိနစ်ခန့်ထားကာ အစာနှင့်အတူ နေ့စဉ် စားသုံးပါ။',
+    preparation: 'Crush raw cloves mechanically to trigger alliinase conversion of alliin into bioactive allicin.',
+    preparationMy: 'ကြက်သွန်ဖြူကို ထောင်းချေပြီး ၁၀ မိနစ်ခန့် လေနှင့်ထိတွေ့စေခြင်းဖြင့် အာနိသင်ရှိသော Allisin ဓာတ် အပြည့်အဝ ထွက်ပေါ်လာစေပါသည်။',
+    clinicalIndication: 'Meta-analyses confirm mild-to-moderate systolic and diastolic blood pressure reduction.',
+    clinicalIndicationMy: 'သွေးပေါင်ချိန် အထက်သွေးနှင့် အောက်သွေးကို သင့်တင့်စွာ ကျဆင်းစေကြောင်း ဆေးသုတေသနများက အတည်ပြုထားပါသည်။',
+    imageUrl: 'https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?auto=format&fit=crop&w=800&q=80',
+    activeCompounds: ['Allicin', 'Ajoene', 'S-Allyl-cysteine', 'Diallyl Trisulfide'],
+    activeCompoundsMy: ['အယ်လီစင် (Allicin)', 'အဂျိုအင်း (Ajoene)', 'ဆာလ်ဖာဒြပ်ပေါင်းများ (Diallyl Trisulfide)'],
+    traditionalUses: ['Hypertension moderation', 'Lipid balance support', 'Cold & influenza prevention'],
+    traditionalUsesMy: [
+      'သွေးတိုးရောဂါတွင် သွေးပေါင်ချိန်ကို ထိန်းညှိပေးခြင်း',
+      'သွေးတွင်း ကိုလက်စထရော အဆီဓာတ်ကို ကျဆင်းစေပြီး သွေးခဲခြင်းကို ကာကွယ်ခြင်း',
+      'ရာသီတုပ်ကွေးနှင့် အအေးမိဖျားနာများကို ကာကွယ်ပေးခြင်း'
+    ],
+    contraindications: ['Discontinue 7 days before surgical procedures due to antiplatelet effect'],
+    contraindicationsMy: [
+      'ခွဲစိတ်မှု မပြုလုပ်မီ ၇ ရက်အလိုတွင် စားသုံးမှု ရပ်နားပါ (သွေးထွက်လွယ်စေနိုင်သောကြောင့်)',
+      'သွေးကျဲဆေးများနှင့် အလွန်အကျွံ တွဲဖက်မစားသင့်ပါ'
+    ],
+    chemicalFamily: 'Amaryllidaceae',
+    chemicalFamilyMy: 'ကြက်သွန်မျိုးရင်း (Amaryllidaceae)',
+    verified: true,
+  },
+  {
+    id: 'momordica-charantia',
+    scientificName: 'Momordica charantia',
+    myanmarName: 'ကြက်ဟင်းခါးသီး',
+    englishName: 'Bitter Melon / Bitter Gourd',
+    pharmaceuticalPart: 'Fructus Momordicae',
+    pharmaceuticalPartMy: 'အသီးနှင့် အရွက် (Fruit & Leaves)',
+    category: 'circulatory',
+    tags: ['Blood Sugar Control', 'Antidiabetic', 'Metabolism'],
+    tagsMy: ['ဆီးချိုထိန်း', 'သွေးတွင်းသကြားကျ', 'အသည်းအားကောင်း'],
+    description: 'Renowned hypoglycemic botanical containing polypeptide-p and charantin that mimic insulin and promote peripheral glucose utilization for adults managing type-2 diabetes.',
+    myanmarDescription: 'ဆီးချို၊ သွေးချို ထိန်းညှိရာတွင် အင်ဆူလင်သဖွယ် အကျိုးပြုသည့် polypeptide-p ပါဝင်ပြီး သွေးတွင်းသကြားဓာတ်ကို ကျဆင်းစေပါသည်။ အသည်းနှင့် မျက်စိကျန်းမာရေးကိုလည်း ထောက်ပံ့ပေးပါသည်။',
+    dosage: '50-100ml fresh diluted juice in the morning or 2-3 slices dried fruit tea daily.',
+    dosageMy: 'မနက်စောစောတွင် အရည်ကျဲ ၅၀-၁၀၀ မီလီလီတာ သောက်ပါ သို့မဟုတ် အခြောက်လှန်း လက်ဖက်ရည်ကြမ်း သောက်ပါ။',
+    preparation: 'Extract fresh pulp juice strained with water, or sun-dry sliced fruit for daily warm herbal tea infusions.',
+    preparationMy: 'လတ်ဆတ်သောအသီးကို ရေနှင့်ရော၍ သတ္တုရည်ညှစ်သောက်ပါ သို့မဟုတ် ပါးပါးလှီး နေလှန်း၍ ရေနွေးစိမ်သောက်ပါ။',
+    clinicalIndication: 'Demonstrated improvement in fasting blood glucose and HbA1c in mild to moderate glycemic dysregulation.',
+    clinicalIndicationMy: 'သဘာဝ အင်ဆူလင်သဖွယ် လုပ်ဆောင်ပေးနိုင်သော Polypeptide-p ပါဝင်ပြီး သွေးတွင်းသကြားဓာတ်ကို ကျဆင်းစေပါသည်။',
+    imageUrl: 'https://images.unsplash.com/photo-1590165482129-1b8b27698780?auto=format&fit=crop&w=800&q=80',
+    activeCompounds: ['Charantin', 'Momordicin', 'Polypeptide-p', 'Vicene'],
+    activeCompoundsMy: ['ချာရန်တင် (Charantin)', 'ပိုလီပက်တိုက်-ပီ (Polypeptide-p)', 'မိုမော်ဒီစင် (Momordicin)'],
+    traditionalUses: [
+      'Type 2 diabetes glycemic regulation and sugar spike reduction',
+      'Hepatic stimulation and blood purifying bitter tonic',
+      'Digestive stimulation and intestinal cleansing'
+    ],
+    traditionalUsesMy: [
+      'ဆီးချို၊ သွေးချို ဝေဒနာရှင်များအတွက် သွေးတွင်းသကြားဓာတ် လျှော့ချထိန်းညှိပေးခြင်း',
+      'အသည်းလုပ်ဆောင်ချက်ကို အားပေးပြီး သွေးသန့်စင်စေခြင်း',
+      'အစာကြေလွယ်စေပြီး ဝမ်းမှန်စေခြင်း'
+    ],
+    contraindications: [
+      'Hypoglycemia (low blood sugar) episodes; monitor when taking alongside synthetic insulin',
+      'Contraindicated in G6PD deficiency and pregnancy'
+    ],
+    contraindicationsMy: [
+      'ဆီးချိုဆေး သောက်နေသူများ သွေးတွင်းသကြားဓာတ် အလွန်အမင်း မကျဆင်းစေရန် သတိပြုတိုင်းတာပါ',
+      'G6PD ချို့တဲ့သူများနှင့် ကိုယ်ဝန်ဆောင်များ မစားသုံးသင့်ပါ'
+    ],
+    chemicalFamily: 'Cucurbitaceae',
+    chemicalFamilyMy: 'ဘူးဖရုံမျိုးရင်း (Cucurbitaceae)',
+    verified: true,
+  },
+  {
+    id: 'moringa-oleifera',
+    scientificName: 'Moringa oleifera',
+    myanmarName: 'ဒန့်ဒလွန်',
+    englishName: 'Moringa / Drumstick Tree',
+    pharmaceuticalPart: 'Folia & Fructus Moringae',
+    pharmaceuticalPartMy: 'အရွက်နှင့် အသီးတောင့် (Leaves & Pods)',
+    category: 'circulatory',
+    tags: ['Joint Vitality', 'Hypertension Support', 'Bone Density'],
+    tagsMy: ['သွေးတိုးကျ', 'အရိုးသန်မာ', 'အဆစ်မြစ်ကိုက်ခဲ'],
+    description: 'Superfood botanical rich in potassium, calcium, and quercetin; mitigates arterial stiffness in hypertension and strengthens bone mineral density in adults over 40.',
+    myanmarDescription: 'ပိုတက်စီယမ်၊ ကယ်လ်စီယမ်နှင့် အင်တီအောက်ဆီးဒင့်များ ကြွယ်ဝစွာပါဝင်သဖြင့် သွေးတိုးကျစေခြင်း၊ အရိုးအဆစ်များကို သန်မာစေခြင်းနှင့် အဆစ်အမြစ်ကိုက်ခဲနာများ သက်သာစေပါသည်။',
+    dosage: '1-2 teaspoons powdered dried leaf in soup or warm water, or fresh drumstick pods in dietary soups.',
+    dosageMy: 'အရွက်ခြောက်မှုန့် လက်ဖက်ရည်ဇွန်း ၁-၂ ဇွန်း သို့မဟုတ် အသီးတောင့်ကို ဟင်းခါးချက်သောက်ပါ။',
+    preparation: 'Fresh leaves cooked in traditional mild clear broth, or shadow-dried leaf powder mixed into warm water.',
+    preparationMy: 'အရွက်နုများကို ကြက်သွန်ဖြူနှင့် ရိုးရာဟင်းခါး ချက်သောက်ပါ သို့မဟုတ် အရိပ်ထဲတွင် အခြောက်လှန်း ကြိတ်ထားသော အမှုန့်ကို ရေနွေးနှင့် သောက်ပါ။',
+    clinicalIndication: 'Quercetin and isothiocyanates downregulate chronic vascular inflammation and systolic pressure.',
+    clinicalIndicationMy: 'သွေးကြောရောင်ရမ်းမှုကို လျှော့ချပေးပြီး သွေးတိုးဖိအားကို သဘာဝအတိုင်း ကျဆင်းစေပါသည်။',
+    imageUrl: 'https://images.unsplash.com/photo-1587411768638-ec71f8e33b78?auto=format&fit=crop&w=800&q=80',
+    activeCompounds: ['Quercetin', 'Kaempferol', 'Isothiocyanates', 'Beta-sitosterol'],
+    activeCompoundsMy: ['ကွာစီတင် (Quercetin)', 'ကမ်ဖာရောလ် (Kaempferol)', 'အိုင်ဆိုသီယိုဆိုင်ရာနိတ် (Isothiocyanates)'],
+    traditionalUses: [
+      'Arterial pressure reduction and cardiovascular tone support',
+      'Osteoarthritis joint mobility support and cartilage nourishment',
+      'Nutritional restorative for physical fatigue and weakness in 40+ adults'
+    ],
+    traditionalUsesMy: [
+      'သွေးတိုးကျစေခြင်းနှင့် သွေးကြောများ တောင့်တင်းမှုကို လျှော့ချပေးခြင်း',
+      'အရိုးအဆစ်များကို သန်မာစေပြီး အဆစ်မြစ်ရောင် လေးဖက်နာ သက်သာစေခြင်း',
+      'အသက် ၄၀ ကျော်များတွင် ခန္ဓာကိုယ် ပင်ပန်းနွမ်းနယ်မှုကို ပြန်လည်လန်းဆန်းစေခြင်း'
+    ],
+    contraindications: [
+      'Avoid root bark consumption (uterine stimulant properties)',
+      'Excessive leaf powder on empty stomach may cause mild laxative effect'
+    ],
+    contraindicationsMy: [
+      'အမြစ်နှင့် အခေါက်ကို စားသုံးခြင်းမှ ရှောင်ကြဉ်ပါ (သားအိမ်ကျုံ့စေနိုင်သည်)',
+      'ဗိုက်ဟောင်းလောင်းဖြစ်ချိန် အမှုန့်အလွန်အကျွံ သောက်ပါက ဝမ်းပျော့စေနိုင်ပါသည်'
+    ],
+    chemicalFamily: 'Moringaceae',
+    chemicalFamilyMy: 'ဒန့်ဒလွန်မျိုးရင်း (Moringaceae)',
+    verified: true,
+  },
+  {
+    id: 'withania-somnifera',
+    scientificName: 'Withania somnifera',
+    myanmarName: 'ပိတောက်စေး / အာရှဝါဂန်ဓာ',
+    englishName: 'Ashwagandha / Indian Ginseng',
+    pharmaceuticalPart: 'Radix Withaniae',
+    pharmaceuticalPartMy: 'အမြစ် (Root)',
+    category: 'adaptogen',
+    tags: ['Restful Sleep', 'Stress Relief', 'Vitality'],
+    tagsMy: ['အိပ်ပျော်စေဆေး', 'စိတ်ဖိစီးမှုလျော့', 'ခွန်အားတိုး'],
+    description: 'Premier adaptogenic root that down-regulates cortisol, alleviates chronic middle-age insomnia, and enhances mental clarity and joint lubrication.',
+    myanmarDescription: 'စိတ်ဖိစီးမှု ဟော်မုန်း cortisol ကို လျှော့ချပေးပြီး ညဘက် နှစ်ခြိုက်စွာ အိပ်ပျော်စေကာ အာရုံကြောနှင့် ခန္ဓာကိုယ် အားအင်ကို ပြန်လည်နုပျိုစေပါသည်။',
+    dosage: '1/2 to 1 teaspoon (2-3g) root powder taken at bedtime in warm milk with a pinch of cardamom or nutmeg.',
+    dosageMy: 'အမြစ်မှုန့် လက်ဖက်ရည်ဇွန်းတစ်ဝက် (၂-၃ ဂရမ်) ကို အိပ်ရာမဝင်မီ နွားနို့နွေးနွေးနှင့် သောက်ပါ။',
+    preparation: 'Root powder decocted gently in warm milk or hot water 45 minutes before sleep.',
+    preparationMy: 'အမြစ်မှုန့်ကို နွားနို့နွေးနွေး သို့မဟုတ် ရေနွေးတွင် အိပ်ရာမဝင်မီ ၄၅ မိနစ်ခန့်အလိုတွင် သောက်သုံးပါ။',
+    clinicalIndication: 'Withanolides modulate GABAergic receptors and decrease chronic stress biomarker elevations.',
+    clinicalIndicationMy: 'စိတ်ဖိစီးမှုဟော်မုန်း Cortisol ကို လျှော့ချပေးပြီး အာရုံကြောစနစ်ကို တည်ငြိမ်စေပါသည်။',
+    imageUrl: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=800&q=80',
+    activeCompounds: ['Withaferin A', 'Withanolide D', 'Sominone', 'Anaferine'],
+    activeCompoundsMy: ['ဝိသာဖာရင်-အေ (Withaferin A)', 'ဝိသနိုလိုက်-ဒီ (Withanolide D)', 'ဆိုမီနုန်း (Sominone)'],
+    traditionalUses: [
+      'Chronic insomnia and nighttime sleep disruption in aging adults',
+      'Fatigue recovery and musculoskeletal endurance restorative',
+      'Calming anxiolytic tonic without daytime grogginess'
+    ],
+    traditionalUsesMy: [
+      'ညဘက် အိပ်မပျော်ခြင်းနှင့် စိတ်မငြိမ်ခြင်းကို ပြေလျော့စေပြီး နှစ်ခြိုက်စွာ အိပ်ပျော်စေခြင်း',
+      'ခန္ဓာကိုယ် အားအင်ကုန်ခမ်းခြင်းနှင့် ကြွက်သားညောင်းညာမှုကို သက်သာစေခြင်း',
+      'နေ့ခင်းဘက် ငိုက်မျဉ်းခြင်းမရှိဘဲ စိတ်ဖိစီးမှုနှင့် စိုးရိမ်ပူပန်မှုကို ပြေလျော့စေခြင်း'
+    ],
+    contraindications: [
+      'Severe hyperthyroidism (may elevate thyroid hormones)',
+      'Avoid high doses alongside sedatives without medical supervision'
+    ],
+    contraindicationsMy: [
+      'သိုင်းရွိုက်ဟော်မုန်း လွန်ကဲနေသူများ (Hyperthyroidism) ဆရာဝန်နှင့် တိုင်ပင်ပါ',
+      'အိပ်ဆေးသောက်နေသူများ အလွန်အကျွံ တွဲဖက်မသောက်သင့်ပါ'
+    ],
+    chemicalFamily: 'Solanaceae',
+    chemicalFamilyMy: 'ခရမ်းမျိုးရင်း (Solanaceae)',
+    verified: true,
+  }
+];

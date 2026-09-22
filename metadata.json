@@ -1,0 +1,6 @@
+{
+  "name": "TMHIP - National Health Repository & 40+ Senior Care",
+  "description": "Myanmar Traditional Medicine & Emergency Healthcare Repository with 40+ senior longevity care, AI Doctor medicine photo identification & dosage guide, herbal pharmacopoeia, and clinical emergency triage.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
