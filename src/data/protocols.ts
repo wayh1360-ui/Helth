@@ -11,24 +11,24 @@ export const PROTOCOLS_DATA: EmergencyProtocol[] = [
     badgeType: 'black',
     steps: [
       {
-        title: '1. Cool with Running Water',
-        instruction: 'Irrigate continuously with clean tap water for 20 minutes. Never apply ice directly.',
-        caution: 'Ice causes severe vasoconstriction and deep tissue necrosis.'
+        title: '၁။ ရေနွေးအေး သို့မဟုတ် ရေပိုက်ရေဖြင့် အနည်းဆုံး မိနစ် ၂၀ ဆေးကြောပါ',
+        instruction: 'မီးလောင် သို့မဟုတ် ရေနွေးပူလောင်သည့် နေရာကို သန့်ရှင်းသော ရေနွေးအေး (သို့မဟုတ်) စီးဆင်းနေသော ရေပိုက်ရေဖြင့် အနည်းဆုံး မိနစ် ၂၀ ခန့် ဆက်တိုက် လောင်းပေးပါ။ ရေခဲ တိုက်ရိုက် မကပ်ပါနှင့်။',
+        caution: 'ရေခဲ တိုက်ရိုက် ကပ်ပါက သွေးကြောများ ရုတ်တရက် ကျဉ်းသွားပြီး အရေပြားဆဲလ်များ ပိုမို ပျက်စီးစေနိုင်ပါသည်။'
       },
       {
-        title: '2. No Folk Pastes',
-        instruction: 'Strictly avoid toothpaste, soy sauce, egg white, or engine grease which introduce sepsis.',
-        caution: 'Traditional home kitchen substances trap heat and trigger virulent bacterial infections.'
+        title: '၂။ သွားဆီ၊ အနံ့သာ၊ ငံပြာရည်နှင့် ကြက်ဥအကာများ လုံးဝ မလိမ်းပါနှင့်',
+        instruction: 'ရှေးရိုးရာ အယူလွဲများဖြစ်သော သွားဆီ၊ ငံပြာရည်၊ ကြက်ဥအကာ၊ နဂါးမောက်သီး အနှစ် သို့မဟုတ် အဆီများကို လုံးဝ (မလိမ်းရ)။ ၎င်းတို့သည် အပူကို အထဲတွင် ပိတ်လှောင်ထားပြီး ပြင်းထန်သော ပိုးဝင်ခြင်းကို ဖြစ်စေပါသည်။',
+        caution: 'သန့်ရှင်းမှု မရှိသော အရာများ လိမ်းပါက စပ်ဖျင်းဖျင်းဖြစ်ရုံမက အရေပြား ပိုးဝင်၍ ပြည်တည်စေပါသည်။'
       },
       {
-        title: '3. Clean Sterile Dressing',
-        instruction: 'Loosely drape with clean plastic cling wrap or sterile non-adherent gauze.',
-        caution: 'Do not wrap tightly; edema will develop rapidly within the first 6 hours.'
+        title: '၃။ သန့်ရှင်းသော အဝတ်နု သို့မဟုတ် ပလာစတစ်ကြည်ဖြင့် ခပ်ဖွဖွ အုပ်ထားပါ',
+        instruction: 'သန့်ရှင်းသောအဝတ် သို့မဟုတ် ပလာစတစ်အကြည် (Plastic Wrap) ဖြင့် ဒဏ်ရာပေါ်တွင် ခပ်ဖွဖွ အုပ်ပေးပါ။ တင်းကျပ်စွာ စီးနှောင်ခြင်း မပြုရ။',
+        caution: 'မီးလောင်ပြီးနောက် မကြာမီ ရောင်ရမ်းလာနိုင်သဖြင့် တင်းကျပ်စွာ စီးနှောင်ပါက သွေးလှည့်ပတ်မှု ပိတ်ဆို့သွားနိုင်ပါသည်။'
       },
       {
-        title: '4. Transfer for Blister Evaluation',
-        instruction: 'If burn is larger than palm size or on face/joints, transfer immediately to hospital.',
-        caution: 'Do not de-roof or pop blisters manually outside sterile hospital theaters.'
+        title: '၄။ အရေပြား ရေကြည်ဖုများ ထွက်ပေါ်ပါက ဖောက်မပစ်ပါနှင့်',
+        instruction: 'ထွက်ပေါ်လာသော ရေကြည်ဖုများကို မိမိဘာသာ အပ်ဖြင့် ဖောက်ခြင်း၊ ဖျစ်ခြင်း လုံးဝ မပြုလုပ်ရ။ လက်ဝါးစောင်းထက် ပိုကြီးသော မီးလောင်ဒဏ်ရာဖြစ်ပါက ဆေးရုံသို့ ချက်ချင်း ပို့ဆောင်ပါ။',
+        caution: 'ရေကြည်ဖုသည် သဘာဝ ပိုးသတ်အကာအကွယ် ဖြစ်သဖြင့် ဖောက်လိုက်ပါက ပိုးဝင်နိုင်ခြေ အလွန်မြင့်မားသွားပါသည်။'
       }
     ]
   },
@@ -36,30 +36,30 @@ export const PROTOCOLS_DATA: EmergencyProtocol[] = [
     id: 'snakebite-action',
     number: 2,
     title: 'Snakebite Emergency Action',
-    myanmarTitle: 'မြွေကိုက်ခံရပါက ချက်ချင်းပြုစုရမည့် အသက်ကယ်နည်း',
+    myanmarTitle: 'မြွေကိုက်ခံရပါက ချက်ချင်းပြုစုရမည့် အသက်ကယ်နည်းလမ်းများ',
     category: 'heat-fevers',
     badge: 'LIFE SAFETY',
     badgeType: 'canvas-soft',
     steps: [
       {
-        title: '1. Complete Immobilization',
-        instruction: 'Keep victim calm and still. Splint the bitten limb; do NOT allow patient to walk.',
-        caution: 'Muscular movement pumps lethal hemotoxic or neurotoxic venom into the systemic circulation.'
+        title: '၁။ လူနာအား ငြိမ်သက်စွာထားပါ (လှုပ်ရှားမှု မပြုရ)',
+        instruction: 'မြွေကိုက်ခံရသူအား မပြေးမလွှားခိုင်းဘဲ ငြိမ်သက်စွာ လဲလျောင်းထားပါ။ ကိုက်ခံရသော ခြေ/လက်ကို သစ်သားချောင်းဖြင့် ကျောက်ပတ်တီးသဖွယ် ငြိမ်အောင် စည်းထားပါ။',
+        caution: 'ကြွက်သား လှုပ်ရှားပါက မြွေဆိပ်သည် သွေးကြောနှင့် ပြန်ရည်ကြောများမှတဆင့် ခန္ဓာကိုယ်အနှံ့ ပိုမို မြန်ဆန်စွာ ပျံ့နှံ့သွားပါသည်။'
       },
       {
-        title: '2. Keep Below Heart',
-        instruction: 'Position bite locus lower than heart level to slow lymphatic venom flow.',
-        caution: 'Elevating the limb accelerates venous venom return to cardiac chambers.'
+        title: '၂။ ကိုက်ခံရသည့် နေရာကို နှလုံးထက် နိမ့်အောင်ထားပါ',
+        instruction: 'မြွေကိုက်ခံရသော ခြေထောက် သို့မဟုတ် လက်ကို နှလုံး၏ အမြင့်ထက် နိမ့်သော နေရာတွင် အနားပေးထားပါ။',
+        caution: 'ကိုက်ခံရသည့်နေရာကို အထက်သို့ မြှောက်ထားပါက မြွေဆိပ်သည် နှလုံးနှင့် ဦးနှောက်သို့ ပိုမိုမြန်ဆန်စွာ ရောက်ရှိသွားမည်ဖြစ်ပါသည်။'
       },
       {
-        title: '3. NO Incision or Tourniquet',
-        instruction: 'Never cut, suck venom, or use tight tourniquets which cause limb necrosis.',
-        caution: 'Tourniquets cause gangrene, amputation, and massive fatal venom release upon removal.'
+        title: '၃။ ဓားဖြင့် မခွဲရ၊ ပါးစပ်ဖြင့် မစုပ်ရ၊ ကြိုး တင်းတင်း မချည်ရ',
+        instruction: 'ဒဏ်ရာကို ဓားဖြင့် ခွဲခြင်း၊ ပါးစပ်ဖြင့် မြွေဆိပ် စုပ်ထုတ်ခြင်း၊ ရာဘာကြိုးဖြင့် သွေးကြော ပိတ်အောင် တင်းကျပ်စွာ ချည်နှောင်ခြင်း လုံးဝ (မပြုလုပ်ရ)။',
+        caution: 'ကြိုး တင်းတင်း ချည်ပါက ကြွက်သားနှင့် နာ့ဗ်ကြောများ ပုပ်သွားပြီး ခြေလက် ဖြတ်ပစ်ရသည်အထိ ဒုက္ခရောက်နိုင်ပါသည်။'
       },
       {
-        title: '4. Rush to Antivenom Facility',
-        instruction: 'Transport directly to township hospital with antivenom stock. Note snake description.',
-        caution: 'Take photograph of snake if safe, but never endanger rescuers trying to catch it.'
+        title: '၄။ မြွေဆိပ်ဖြေဆေး (Antivenom) ရှိသော ဆေးရုံသို့ အမြန်ဆုံးပို့ပါ',
+        instruction: 'အနီးဆုံး မြို့နယ်ဆေးရုံ သို့မဟုတ် မြွေဆိပ်ဖြေဆေး ရှိသော ဆေးရုံသို့ ချက်ချင်း ပို့ဆောင်ပါ။ မြွေ၏ ပုံသဏ္ဌာန် သို့မဟုတ် အမျိုးအစားကို သတိပြု မှတ်သားထားပါ။',
+        caution: 'မြွေကို လိုက်ဖမ်းရန် မကြိုးစားပါနှင့်။ ဘေးကင်းပါက ဓာတ်ပုံရိုက်ထားရုံဖြင့် လုံလောက်ပါသည်။ အရေးပေါ် ၁၉၂ သို့ ခေါ်ဆိုပါ။'
       }
     ]
   },
@@ -67,26 +67,31 @@ export const PROTOCOLS_DATA: EmergencyProtocol[] = [
     id: 'heat-exhaustion',
     number: 3,
     title: 'Heat Exhaustion & Sunstroke',
-    myanmarTitle: 'အပူလျှပ်ခြင်းနှင့် အမောဖောက်ခြင်း သက်သာစေရန်',
+    myanmarTitle: 'အပူလျှပ်ခြင်းနှင့် ရုတ်တရက် အမောဖောက်ခြင်း ရှေးဦးပြုစုနည်း',
     category: 'heat-fevers',
     badge: 'RAPID ACTION',
     badgeType: 'canvas-soft',
     steps: [
       {
-        title: 'Move to Shaded Ventilation',
-        instruction: 'Relocate patient into cool airflow; loosen collar and constrictive clothing.',
-        caution: 'Immediately fan the patient and mist lukewarm water over exposed skin.'
+        title: '၁။ အေးမြပြီး လေဝင်လေထွက်ကောင်းသော နေရာသို့ ရွှေ့ပါ',
+        instruction: 'လူနာအား နေပူထဲမှ အေးမြ၍ အရိပ်ရသော၊ လေဝင်လေထွက်ကောင်းသော နေရာသို့ ချက်ချင်း ရွှေ့ပြောင်းပါ။ ကျပ်တည်းသော အဝတ်အစားများ၊ ကြယ်သီးများကို ဖြေလျှော့ပေးပါ။',
+        caution: 'လူနာကို ပူအောက်လှောင်သော အခန်းထဲတွင် မထားပါနှင့်။ ယက်တောင်းဖြင့် ယပ်ခတ်ပေးပါ သို့မဟုတ် ပန်ကာ ဖွင့်ပေးပါ။'
       },
       {
-        title: 'Sip Electrolyte ORS',
-        instruction: 'Administer cool water or oral rehydration solution. Avoid ice-cold drinks.',
-        caution: 'If unconscious or vomiting, place in recovery position; never force oral liquids.'
+        title: '၂။ ရေနွေးနွေးဆွတ်ထားသော အဝတ်ဖြင့် ရေပတ်တိုက်ပေးပါ',
+        instruction: 'ရေဆွတ်ထားသော အဝတ်ဖြင့် လည်ပင်း၊ ဂျိုင်းကြား၊ ပေါင်ခြံနှင့် နဖူးတို့ကို ရေပတ်တိုက်ပေးပါ။ ရေအေးလွန်းသော ရေဖြင့် ရေချိုးမပေးပါနှင့်။',
+        caution: 'ရေခဲရေဖြင့် ရေပတ်တိုက်ပါက အရေပြား သွေးကြောများ ရုတ်တရက် ပိတ်သွားပြီး အပူချိန် ပိုမို တက်လာနိုင်ပါသည်။'
+      },
+      {
+        title: '၃။ ဓာတ်ဆားရေ သို့မဟုတ် ရေအေး ဖြည်းဖြည်းစီ သောက်ခိုင်းပါ',
+        instruction: 'လူနာ သတိရှိပါက ဓာတ်ဆားရေ သို့မဟုတ် သန့်ရှင်းသော ရေကို ဖြည်းဖြည်းစီ နည်းနည်းစီ သောက်ခိုင်းပါ။ သတိလစ်နေပါက ပါးစပ်ထဲသို့ ရေအတင်း မထည့်ရ။',
+        caution: 'သတိမရှိသူ သို့မဟုတ် အန်နေသူအား ပါးစပ်မှ ရေတိုက်ပါက အသက်ရှူလမ်းကြောင်းထဲ ရေဝင်ပြီး အသက်အန္တရာယ် ရှိပါသည်။'
       }
     ]
   },
   {
     id: 'acute-asthma',
-    number: 1,
+    number: 4,
     title: 'Acute Asthma & Severe Wheezing',
     myanmarTitle: 'အရေးပေါ် ရင်ကျပ်မောခြင်းနှင့် အသက်ရှူရခက်ခဲခြင်း',
     category: 'respiratory',
@@ -94,77 +99,77 @@ export const PROTOCOLS_DATA: EmergencyProtocol[] = [
     badgeType: 'black',
     steps: [
       {
-        title: '1. Upright Seated Posture',
-        instruction: 'Sit patient fully upright leaning slightly forward with arms on knees.',
-        caution: 'Never force patient to lie down, which compresses thoracic diaphragm expansion.'
+        title: '၁။ မတ်မတ် ထိုင်ခိုင်းပါ (လှဲမအိပ်ရ)',
+        instruction: 'ရင်ကျပ်နေသော လူနာအား မတ်မတ် ထိုင်ခိုင်းပြီး ရှေ့သို့ အနည်းငယ် ကိုင်းခိုင်းထားပါ။ လက်နှစ်ဖက်ကို ဒူးပေါ် တင်ထားခိုင်းပါ။',
+        caution: 'လူနာအား လှဲအိပ်ခိုင်းပါက အဆုတ်၏ အသက်ရှူနိုင်စွမ်း လျော့ကျသွားပြီး အသက်ရှူ ပိုမို ကျပ်လာပါမည်။'
       },
       {
-        title: '2. Rapid Inhaler Reliever',
-        instruction: 'Give 4 puffs of blue Salbutamol inhaler with spacer (1 puff per 4 breaths).',
-        caution: 'Shake inhaler between each single dose.'
+        title: '၂။ အရေးပေါ် ရင်ကျပ်ရှူဆေး (Inhaler) ရှူပေးပါ',
+        instruction: 'အပြာရောင် Salbutamol ရင်ကျပ်ရှူဆေးဘူးကို ၄ ကြိမ် ရှူပေးပါ။ ရှူဆေးဘူးကို မရှူမီ သေချာစွာ လှုပ်ပေးပါ။',
+        caution: 'ရှူဆေးတစ်ကြိမ် ရှူတိုင်း အသက်ရှူ ၄ ကြိမ်ခန့် ခပ်ပြင်းပြင်း ရှူသွင်းခိုင်းပါ။'
       },
       {
-        title: '3. Repeat After 4 Minutes',
-        instruction: 'If breathing remains difficult, give another 4 puffs while calling emergency 192.',
-        caution: 'Cyanosis (blue lips) or inability to speak full sentences indicates respiratory failure.'
+        title: '၃။ ၄ မိနစ်အထိ မသက်သာပါက ထပ်မံ ရှူပေးပါ',
+        instruction: '၄ မိနစ်ကြာသည်အထိ အသက်ရှူကျပ်ခြင်း မသက်သာပါက ရှူဆေး ၄ ကြိမ် ထပ်မံ ရှူပေးပြီး အရေးပေါ် ၁၉၂ လူနာတင်ယာဉ်သို့ ချက်ချင်း ခေါ်ဆိုပါ။',
+        caution: 'နှုတ်ခမ်းများ ပြာနှမ်းလာခြင်း သို့မဟုတ် စကား အပြည့်မပြောနိုင်ခြင်းသည် အရေးပေါ် အောက်ဆီဂျင် လိုအပ်နေသော လက္ခဏာဖြစ်ပါသည်။'
       }
     ]
   },
   {
     id: 'choking-heimlich',
-    number: 2,
-    title: 'Choking & Foreign Body Airway Obstruction',
+    number: 5,
+    title: 'Choking & Airway Obstruction',
     myanmarTitle: 'လည်ချောင်း သီးခြင်းနှင့် အသက်ရှူလမ်းကြောင်း ပိတ်ဆို့ခြင်း',
     category: 'respiratory',
     badge: 'LIFE SAFETY',
     badgeType: 'black',
     steps: [
       {
-        title: '1. Encourage Vigorous Coughing',
-        instruction: 'If patient can speak, cry, or cough, encourage them to cough forcefully.',
-        caution: 'Do not perform blind finger sweeps in the oral pharynx.'
+        title: '၁။ ချောင်းပြင်းပြင်း ဆိုးခိုင်းပါ',
+        instruction: 'လူနာသည် စကားပြောနိုင်၊ ချောင်းဆိုးနိုင်ပါက သီးနေသောအရာ ထွက်လာသည်အထိ ချောင်းပြင်းပြင်း ဆိုးခိုင်းပါ။ ပါးစပ်ထဲ လက်နှိုက်၍ စမ်းမစုတ်ပါနှင့်။',
+        caution: 'စမ်းသပ် လက်နှိုက်ပါက ပိတ်ဆို့နေသော အရာကို လည်ချောင်းထဲ ပိုမို နက်ရှိုင်းစွာ တွန်းပို့လိုက်သလို ဖြစ်သွားနိုင်ပါသည်။'
       },
       {
-        title: '2. 5 Sharp Back Blows',
-        instruction: 'Lean victim forward and deliver 5 firm heel-of-hand blows between shoulder blades.',
-        caution: 'Support victim’s chest with non-dominant arm.'
+        title: '၂။ ကျောကုန်းကို ၅ ကြိမ် ရိုက်ပေးပါ (Back Blows)',
+        instruction: 'လူနာကို ရှေ့သို့ ကိုင်းခိုင်းပြီး ကျောကုန်း (ဒူးဆစ်နှစ်ခုကြား) ကို လက်ဖဝါးအောက်ခြေဖြင့် ၅ ကြိမ် ပြင်းပြင်းထန်ထန် ရိုက်ပေးပါ။',
+        caution: 'အခြားလက်တစ်ဖက်ဖြင့် လူနာ၏ ရင်ဘတ်ကို သေချာစွာ ထိန်းထားပေးပါ။'
       },
       {
-        title: '3. 5 Abdominal Thrusts (Heimlich)',
-        instruction: 'Stand behind, clasp fist above navel, pull inward and upward sharply.',
-        caution: 'In pregnant women or infants, perform sternal chest thrusts instead.'
+        title: '၃။ ဝမ်းဗိုက်ကို ပင့်တွန်းပေးပါ (Heimlich Maneuver)',
+        instruction: 'လူနာ၏ အနောက်မှရပ်၍ လက်သီးဆုပ်ကို ချက်အထက်တွင် ထားကာ အထက်သို့ အရှိန်ဖြင့် ၅ ကြိမ် ပင့်တွန်းပေးပါ။',
+        caution: 'ကိုယ်ဝန်ဆောင် မိခင်များနှင့် မွေးကင်းစကလေးများတွင် ဝမ်းဗိုက်အစား ရင်ဘတ် (Sternal Thrust) ကိုသာ တွန်းပေးရပါမည်။'
       }
     ]
   },
   {
     id: 'food-poisoning',
-    number: 1,
-    title: 'Acute Food Poisoning & Severe Dehydration',
+    number: 6,
+    title: 'Acute Food Poisoning & Diarrhea',
     myanmarTitle: 'အစာအဆိပ်သင့်ခြင်းနှင့် ရုတ်တရက် ဝမ်းပျက်ဝမ်းလျှောခြင်း',
     category: 'gastrointestinal',
     badge: 'RAPID ACTION',
     badgeType: 'canvas-soft',
     steps: [
       {
-        title: '1. Continuous ORS Rehydration',
-        instruction: 'Mix 1 sachet standardized WHO-ORS in 1 liter clean boiled-cooled water.',
-        caution: 'Sip 200ml after every loose stool episode; do not drink sugary sodas.'
+        title: '၁။ ဓာတ်ဆားရေ မပြတ် သောက်ပေးပါ',
+        instruction: 'WHO အသိအမှတ်ပြု ဓာတ်ဆားထုပ် ၁ ထုပ်ကို သန့်ရှင်းသော ရေနွေးကျက်အေး ၁ လီတာတွင် ဖျော်၍ ဝမ်းသွားသည့်အခါတိုင်း တဖုံစီ မပြတ် သောက်ပေးပါ။',
+        caution: 'အချိုရည် သို့မဟုတ် အယ်လ်ကိုဟော သောက်သုံးခြင်းမှ လုံးဝ ရှောင်ကြဉ်ပါ။'
       },
       {
-        title: '2. Avoid Anti-Motility Pills',
-        instruction: 'Avoid Loperamide (Imodium) in bacterial diarrhea or bloody stools.',
-        caution: 'Stopping bowel motility traps toxic bacterial endotoxins inside the gut.'
+        title: '၂။ ဝမ်းပိတ်ဆေးများ ချက်ချင်း မသောက်ပါနှင့်',
+        instruction: 'ပိုးမွှားကြောင့်ဖြစ်သော ဝမ်းပျက်ခြင်းတွင် Loperamide (Imodium) ကဲ့သို့သော ဝမ်းပိတ်ဆေးများကို ဆရာဝန်မညွှန်ဘဲ မသောက်ပါနှင့်။',
+        caution: 'ဝမ်းပိတ်လိုက်ပါက အူလမ်းကြောင်းထဲတွင် အဆိပ်အတောက် ပိုးမွှားများ ပိတ်လှောင်ကျန်ရစ်ပြီး အခြေအနေ ပိုမို ဆိုးရွားစေပါသည်။'
       },
       {
-        title: '3. Monitor Red Flag Warnings',
-        instruction: 'High fever (>38.5°C), blood in stool, or sunken eyes mandate IV hospital fluid rescue.',
-        caution: 'Children under 5 dehydrate in fewer than 12 hours.'
+        title: '၃။ အန္တရာယ်လက္ခဏာများ ရှိပါက ဆေးရုံသွားပါ',
+        instruction: 'ပြင်းထန်စွာ ဖျားခြင်း (၃၈.၅ ဒီဂရီထက်ပို)၊ ဝမ်းထဲ သွေးပါခြင်း၊ မျက်ကွင်းဟောင်းလောင်းပေါက်၍ သတိလစ်ချင်သလို ဖြစ်ပါက ဆေးရုံသို့ ချက်ချင်း သွားပါ။',
+        caution: 'အသက် ၅ နှစ်အောက် ကလေးငယ်များတွင် ရေဓာတ်ခမ်းခြောက်မှု အလွန်မြန်ဆန်သဖြင့် အထူးသတိပြုပါ။'
       }
     ]
   },
   {
     id: 'bone-fracture',
-    number: 1,
+    number: 7,
     title: 'Bone Fracture & Trauma Splinting',
     myanmarTitle: 'အရိုးကျိုးဒဏ်ရာနှင့် အဆစ်လွဲခြင်း ရှေးဦးသူနာပြုစုနည်း',
     category: 'musculoskeletal',
@@ -172,25 +177,25 @@ export const PROTOCOLS_DATA: EmergencyProtocol[] = [
     badgeType: 'black',
     steps: [
       {
-        title: '1. Never Re-align Bone',
-        instruction: 'Do not attempt to push bone fragments back into skin or straighten angulated limbs.',
-        caution: 'Attempting reduction tears neurovascular bundles causing permanent paralysis.'
+        title: '၁။ ကျိုးနေသော အရိုးကို အတန်းအတိုင်း ပြန်ဆွဲ မဆန့်ပါနှင့်',
+        instruction: 'ကျိုးထွက်နေသော အရိုးစများကို အရေပြားထဲ ပြန်တွန်းထည့်ခြင်း သို့မဟုတ် ကွေးနေသော ခြေလက်ကို အတင်းပြန်ဆန့်ခြင်း လုံးဝ မပြုလုပ်ရ။',
+        caution: 'အတင်းပြန်ဆန့်ပါက စူထွက်နေသော အရိုးစက သွေးကြောနှင့် အာရုံကြောများကို ဖြတ်တောက်မိပြီး အကြောသေသွားနိုင်ပါသည်။'
       },
       {
-        title: '2. Immobilize Above & Below Joint',
-        instruction: 'Apply rigid padded board or folded cardboard across the joints above and below fracture.',
-        caution: 'Tie bandages securely but check distal pulses to ensure circulation is not choked.'
+        title: '၂။ ကျောက်ပျဉ် သို့မဟုတ် သစ်သားချောင်းဖြင့် ငြိမ်အောင် စည်းပါ',
+        instruction: 'ကျိုးနေသော နေရာ၏ အထက်နှင့် အောက် အဆစ်နှစ်ခုလုံး ပါဝင်အောင် သစ်သားချောင်း သို့မဟုတ် ကတ်ထူပြားဖြင့် ကျောက်ပတ်တီး စည်းပေးပါ။',
+        caution: 'ကျောက်ပတ်တီး စည်းပြီးပါက ခြေချောင်း/လက်ချောင်းများ အေးစက်သွားခြင်း ရှိမရှိ သွေးလှည့်ပတ်မှုကို စစ်ဆေးပါ။'
       },
       {
-        title: '3. Control External Hemorrhage',
-        instruction: 'If bone penetrated skin (compound fracture), cover with sterile moist dressing.',
-        caution: 'Apply pressure only on surrounding bleeding tissue, never directly on exposed bone.'
+        title: '၃။ သွေးထွက်နေပါက သန့်ရှင်းသော အဝတ်ဖြင့် ဖိထားပါ',
+        instruction: 'အရိုးကျိုးပြီး အရေပြားပေါက်၍ သွေးထွက်နေပါက သန့်ရှင်းသောအဝတ်ဖြင့် သွေးထွက်သည့် နေရာပတ်လည်ကို ဖိပေးပါ။ အရိုးပေါ် တိုက်ရိုက် မဖိရ။',
+        caution: 'စူထွက်နေသော အရိုးကို တိုက်ရိုက် မဖိပါနှင့်။ ဆေးရုံသို့ အမြန်ဆုံး ပို့ဆောင်ပါ။'
       }
     ]
   },
   {
     id: 'stroke-fast',
-    number: 1,
+    number: 8,
     title: 'Acute Stroke Emergency (FAST Protocol)',
     myanmarTitle: 'ရုတ်တရက် လေဖြတ်ခြင်း အရေးပေါ် စစ်ဆေးကုသနည်း (FAST စနစ်)',
     category: 'cardiovascular',
@@ -198,50 +203,24 @@ export const PROTOCOLS_DATA: EmergencyProtocol[] = [
     badgeType: 'black',
     steps: [
       {
-        title: 'F - Face Drooping (မျက်နှာရွဲ့မရွဲ့ စစ်ပါ)',
-        instruction: 'Ask patient to smile. Look if one side of the face droops or is numb.',
-        caution: 'Asymmetry in smile or corner of mouth dropping is an immediate sign of ischemic cerebral infarct.'
+        title: 'F - Face Drooping (မျက်နှာရွဲ့မရွဲ့ စစ်ဆေးပါ)',
+        instruction: 'လူနာအား ပြုံးခိုင်းပါ။ မျက်နှာတစ်ခြမ်း ရွဲ့နေခြင်း၊ နှုတ်ခမ်းထောင့် ကျဆင်းနေခြင်း ရှိမရှိ စစ်ဆေးပါ။',
+        caution: 'မျက်နှာ သို့မဟုတ် နှုတ်ခမ်း ရွဲ့ခြင်းသည် ဦးနှောက်သွေးကြော ပိတ်ဆို့ခြင်း၏ အရေးကြီးသော လက္ခဏာဖြစ်ပါသည်။'
       },
       {
         title: 'A - Arm Weakness (လက်မောင်း မြှောက်ခိုင်းပါ)',
-        instruction: 'Ask person to raise both arms. Check if one arm drifts downward or cannot stay lifted.',
-        caution: 'Unilateral arm drift indicates motor cortex hemiparesis.'
+        instruction: 'လူနာအား လက်နှစ်ဖက်စလုံး အထက်သို့ မြှောက်ခိုင်းပါ။ လက်တစ်ဖက် အောက်သို့ ပြုတ်ကျသွားခြင်း ရှိမရှိ စစ်ဆေးပါ။',
+        caution: 'လက်တစ်ဖက် မမြှောက်နိုင်ခြင်း သို့မဟုတ် အားမရှိခြင်းသည် ဦးနှောက်ဆဲလ်များ သွေးမရတော့သော လက္ခဏာဖြစ်ပါသည်။'
       },
       {
         title: 'S - Speech Difficulty (စကားပြောခိုင်းပါ)',
-        instruction: 'Ask person to repeat a simple phrase (e.g., "The sky is blue"). Check for slurred speech or inability to talk.',
-        caution: 'Dysarthria or aphasia requires urgent thrombolysis within the 3.5 to 4.5 hour medical window.'
+        instruction: 'လူနာအား ရိုးရှင်းသော စကားတစ်ခွန်း (ဥပမာ- "ကောင်းသောနေ့ပါ") ကို ထပ်ခါထပ်ခါ ပြောခိုင်းပါ။ စကား ဗလုံးဗထွေး ဖြစ်မဖြစ် စစ်ပါ skin',
+        caution: 'စကားပြောရ ခက်ခဲခြင်း သို့မဟုတ် စကားမထွက်ခြင်းသည် အချိန်မဆိုင်းဘဲ ဆေးကုသမှု လိုအပ်နေပါသည်။'
       },
       {
         title: 'T - Time to Call 192 (အချိန်မဆိုင်းဘဲ ဆေးရုံပို့ပါ)',
-        instruction: 'If ANY of these signs appear, call 192 or rush immediately to emergency hospital. Note exact time symptoms began.',
-        caution: 'Do NOT give aspirin or oral water until brain CT scan confirms ischemic vs hemorrhagic stroke.'
-      }
-    ]
-  },
-  {
-    id: 'heart-attack',
-    number: 2,
-    title: 'Acute Heart Attack & Chest Pain',
-    myanmarTitle: 'ရုတ်တရက် နှလုံးသွေးကြောပိတ် ရင်ဘတ်အောင့်ခြင်း ရှေးဦးပြုစုနည်း',
-    category: 'cardiovascular',
-    badge: 'CRITICAL',
-    badgeType: 'black',
-    steps: [
-      {
-        title: '1. Recognize Crushing Chest Pain (လက္ခဏာခွဲခြားပါ)',
-        instruction: 'Severe squeezing or pressure in central chest radiating to left arm, neck, jaw, or back, with cold sweat.',
-        caution: 'In women and diabetic patients, symptoms may present atypically as severe nausea, breathlessness, or unusual fatigue.'
-      },
-      {
-        title: '2. Rest in Semi-Recumbent Posture (ထိုင်ခိုင်းပါ)',
-        instruction: 'Sit patient on floor leaning against wall with knees bent to reduce cardiac workload. Loosen tight collars.',
-        caution: 'Do NOT allow patient to walk or exert effort.'
-      },
-      {
-        title: '3. Dispersible Aspirin & Call 192 (ဆေးဝါးနှင့် ဖုန်းခေါ်ဆိုပါ)',
-        instruction: 'Call 192 immediately. If conscious and not allergic, give 300mg chewable soluble Aspirin to chew and swallow.',
-        caution: 'Chewing aspirin allows rapid mucosal absorption to halt coronary thrombosis.'
+        instruction: 'အထက်ပါ လက္ခဏာတစ်ခုခု တွေ့ပါက ၁၉၂ သို့ ချက်ချင်း ခေါ်ဆိုပါ သို့မဟုတ် အနီးဆုံး ဆေးရုံကြီးသို့ အချိန်မဆိုင်းဘဲ ပို့ဆောင်ပါ။ လေဖြတ်သည့် အချိန်ကို သေချာစွာ မှတ်သားထားပါ။',
+        caution: 'ဦးနှောက် ဓာတ်မှန် (CT Scan) မရိုက်ရသေးမီ Aspirin သို့မဟုတ် ရေတိုက်ခြင်း လုံးဝ မပြုလုပ်ရ။'
       }
     ]
   }

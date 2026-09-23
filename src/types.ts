@@ -1,8 +1,34 @@
-export type ActiveSection = 'overview' | 'plants' | 'symptoms' | 'senior' | 'hotlines' | 'assistant' | 'posts' | 'admin';
+export type ActiveSection = 'overview' | 'remedies' | 'plants' | 'symptoms' | 'hotlines' | 'assistant' | 'posts' | 'admin';
 
 export type ThemeMode = 'light' | 'comfort' | 'dark';
 
 export type FontSize = 'sm' | 'base' | 'lg' | 'xl';
+
+export interface HomeMedicalRecord {
+  id: string;
+  patientName: string;
+  date: string;
+  symptoms: string;
+  remedyTaken: string;
+  notes?: string;
+  status: 'recovered' | 'treating' | 'consulted';
+  createdAt: number;
+}
+
+export interface CustomSymptomRemedy {
+  id: string;
+  symptomName: string;
+  symptomNameMy: string;
+  category: string;
+  categoryMy: string;
+  description: string;
+  descriptionMy: string;
+  remedies: string[];
+  remediesMy: string[];
+  precautions?: string[];
+  precautionsMy?: string[];
+  isCustom?: boolean;
+}
 
 export interface Herb {
   id: string;

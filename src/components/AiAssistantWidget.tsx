@@ -190,8 +190,8 @@ export const AiAssistantWidget: React.FC<AiAssistantWidgetProps> = ({
                 <Bot className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-xs font-bold leading-tight flex items-center gap-1.5">
-                  <span>TMHIP Clinical Assistant</span>
+                <div className="text-xs font-bold leading-tight flex items-center gap-1.5 font-myanmar">
+                  <span>{chatLanguage === 'my' ? 'အိမ်တွင်းကုသမှုအကြံပေး' : 'Home Treatment Advisor'}</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                 </div>
                 <div className="text-[10px] text-neutral-400 font-medium">

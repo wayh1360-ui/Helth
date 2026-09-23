@@ -12,7 +12,9 @@ import {
   Activity,
   CheckCircle2,
   Phone,
-  Newspaper
+  Newspaper,
+  FileText,
+  Thermometer
 } from 'lucide-react';
 import { Herb, EmergencyProtocol, ActiveSection } from '../types';
 
@@ -76,25 +78,26 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     colorClass: string;
     accentClass: string;
   }[] = [
+
     {
-      id: 'senior',
-      titleEn: '40+ Senior Care & Longevity',
-      titleMy: '၄၀+ သက်ကြီးကျန်းမာရေး စောင့်ရှောက်မှု',
-      descEn: 'Hypertension, glycemic balance, joint preservation & stroke FAST guidelines.',
-      descMy: 'သွေးတိုး၊ ဆီးချို၊ ဒူးနာ၊ အိပ်မပျော်ခြင်း နှင့် လေဖြတ် FAST စောင့်ရှောက်နည်းများ။',
-      tagEn: 'Doctor Vetted',
-      tagMy: 'အထူးကဏ္ဍ',
-      icon: <Activity className="w-5 h-5 text-amber-600 dark:text-amber-400" />,
-      colorClass: 'bg-amber-500/10 border-amber-500/30 hover:border-amber-500',
-      accentClass: 'text-amber-800 dark:text-amber-300',
+      id: 'remedies',
+      titleEn: 'Symptoms & Home Remedies',
+      titleMy: 'ရောဂါလက္ခဏာများ နှင့် အိမ်တွင်းဆေးနည်းများ',
+      descEn: 'Remedies for runny nose, cough, stomach ache, skin, toothache & headache.',
+      descMy: 'နှာစီး၊ ချောင်းဆိုး၊ ဗိုက်အောင့်၊ အရေပြား၊ သွားကိုက်၊ ခေါင်းကိုက် သဘာဝ ဆေးနည်းများ။',
+      tagEn: 'Remedies',
+      tagMy: 'ဆေးနည်းများ',
+      icon: <Thermometer className="w-5 h-5 text-teal-600 dark:text-teal-400" />,
+      colorClass: 'bg-teal-500/10 border-teal-500/30 hover:border-teal-500',
+      accentClass: 'text-teal-800 dark:text-teal-300',
     },
     {
       id: 'plants',
-      titleEn: '120+ Botanical Herb Catalog',
-      titleMy: 'ဆေးဖက်ဝင်အပင်များ ကျမ်း',
+      titleEn: 'Natural Medicinal Herbs Directory',
+      titleMy: 'သဘာဝဆေးဖက်ဝင်အပင်များ',
       descEn: 'Standardized monographs, active compounds, preparation methods & indications.',
       descMy: 'အသိအမှတ်ပြု ဆေးဖက်ဝင်အပင် ၁၂၀ ကျော်၏ ဓာတုဗေဒ အချက်အလက်နှင့် သောက်သုံးပုံများ။',
-      tagEn: 'Pharmacopoeia',
+      tagEn: '120+ Herbs',
       tagMy: 'အပင် ၁၂၀+',
       icon: <BookOpen className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />,
       colorClass: 'bg-emerald-500/10 border-emerald-500/30 hover:border-emerald-500',
@@ -126,12 +129,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     },
     {
       id: 'assistant',
-      titleEn: 'AI Doctor & Medicine Scanner',
-      titleMy: 'AI ဆရာဝန်နှင့် ဆေးဝါးဓာတ်ပုံစစ်ဆေးစက်',
-      descEn: 'Snap photo of medicine bottles/blisters to get elderly dosage guide & audio instructions.',
-      descMy: 'သက်ကြီးရွယ်အိုများအတွက် ဆေးဝါးဓာတ်ပုံရိုက်၍ အမည်၊ သောက်သုံးပုံနှင့် သတိပြုရန်များကို အသံဖြင့် ရှင်းပြပေးခြင်း။',
-      tagEn: 'Photo AI',
-      tagMy: 'ဓာတ်ပုံစစ်ဆေး',
+      titleEn: 'Home Treatment Advisor',
+      titleMy: 'အိမ်တွင်းကုသမှုအကြံပေး',
+      descEn: 'Search medicines, symptoms, medicine photo scanning & dosage advice.',
+      descMy: 'ဆေးဝါး၊ ရောဂါလက္ခဏာများ ရှာဖွေခြင်း၊ ဓာတ်ပုံစစ်ဆေးခြင်းနှင့် သောက်သုံးပုံ အကြံပြုချက်။',
+      tagEn: 'AI Advisor',
+      tagMy: 'အကြံပေး',
       icon: <Bot className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />,
       colorClass: 'bg-emerald-500/10 border-emerald-500/30 hover:border-emerald-500',
       accentClass: 'text-emerald-800 dark:text-emerald-300',
@@ -328,39 +331,39 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
         </div>
 
-        {/* 40+ Senior Health Highlight Banner (Clean & Authoritative) */}
-        <div className="p-5 sm:p-6 rounded-3xl bg-amber-500/10 border border-amber-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        {/* Symptoms & Home Remedies Highlight Banner */}
+        <div className="p-5 sm:p-6 rounded-3xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-start sm:items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
               <Activity className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded-full bg-amber-500 text-white text-[10px] font-extrabold uppercase tracking-wide">
-                  {language === 'my' ? '၄၀+ သီးသန့် ကဏ္ဍ' : 'Special Feature for 40+'}
+                <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-extrabold uppercase tracking-wide">
+                  {language === 'my' ? 'အိမ်တွင်းကုသမှု' : 'Home Remedies'}
                 </span>
-                <span className="text-xs text-amber-900 dark:text-amber-300 comfort:text-amber-950 font-semibold font-myanmar">
-                  {language === 'my' ? 'အထူးကုဆရာဝန်နှင့် တိုင်းရင်းဆေးပညာရှင်များ အကြံပြုချက်' : 'Senior Health & Longevity'}
+                <span className="text-xs text-emerald-900 dark:text-emerald-300 comfort:text-emerald-950 font-semibold font-myanmar">
+                  {language === 'my' ? 'လွယ်ကူထိရောက်သော အိမ်တွင်းသက်သာနည်းများ' : 'Symptoms & Natural Home Care'}
                 </span>
               </div>
               <h2 className="text-lg sm:text-xl font-bold text-black dark:text-white comfort:text-[#231f1a] mt-1">
                 {language === 'my' 
-                  ? 'အသက် ၄၀ ကျော်များအတွက် သွေးတိုး၊ ဆီးချို၊ အဆစ်အမြစ်နှင့် နှလုံးကျန်းမာရေး' 
-                  : '40+ Vitality & Chronic Care: Hypertension, Diabetes & Joint Health'}
+                  ? 'ရောဂါလက္ခဏာများ နှင့် သဘာဝ အိမ်တွင်းကုသမှုများ' 
+                  : 'Symptoms & Natural Home Remedies'}
               </h2>
               <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-300 comfort:text-[#645a4e] font-myanmar mt-0.5">
                 {language === 'my'
-                  ? 'အသံဖြင့် ဖတ်ပြပေးသောစနစ် (Audio Read-Aloud)၊ စာလုံးအရွယ်အစား (A- A+) နှင့် မျက်စိအေး (Comfort) စနစ်များ ပါဝင်ပါသည်။'
-                  : 'Equipped with Voice Audio Read-Aloud, A- to A+ font scaling, and Eye-Comfort reading mode.'}
+                  ? 'နှာစီး၊ ချောင်းဆိုး၊ ဗိုက်အောင့်၊ အရေပြား၊ သွားကိုက်၊ ခေါင်းကိုက် နှင့် အခြားလက္ခဏာများအတွက် သဘာဝကုထုံးများ'
+                  : 'Home remedies for runny nose, cough, stomach ache, skin issues, toothache, headache & custom symptoms.'}
               </p>
             </div>
           </div>
           <button
-            onClick={() => onSwitchSection('senior')}
-            className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-black text-white dark:bg-white dark:text-black comfort:bg-[#231f1a] comfort:text-[#faf6ee] font-bold text-xs flex items-center justify-center gap-2 hover:opacity-90 transition-all cursor-pointer shrink-0 shadow-xs"
+            onClick={() => onSwitchSection('symptoms')}
+            className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 font-bold text-xs flex items-center justify-center gap-2 hover:opacity-90 transition-all cursor-pointer shrink-0 shadow-xs"
             type="button"
           >
-            <span className="font-myanmar">{language === 'my' ? '၄၀+ ကျန်းမာရေးကဏ္ဍ ဖွင့်ပါ' : 'Open 40+ Health Hub'}</span>
+            <span className="font-myanmar">{language === 'my' ? 'ရောဂါလက္ခဏာများ ကြည့်ရန်' : 'View Symptoms & Remedies'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

@@ -19,7 +19,9 @@ import {
   Table,
   Check,
   Newspaper,
-  UploadCloud
+  UploadCloud,
+  FileText,
+  Thermometer
 } from 'lucide-react';
 import { ActiveSection, ThemeMode, FontSize } from '../types';
 import { LoginButton } from './LoginButton';
@@ -82,28 +84,29 @@ export const Navbar: React.FC<NavbarProps> = ({
       shortMy: 'ပင်မ သတင်းလွှာ',
       descEn: 'Live community posts & daily medical bulletins',
       descMy: 'တိုက်ရိုက်လွှင့်တင် ပို့စ်များနှင့် နေ့စဉ် ကျန်းမာရေး သတင်းလွှာများ',
-      icon: <Home className="w-4 h-4" />,
+      icon: <Home className="w-4 h-4 text-emerald-600" />,
       isBadge: true,
       badgeText: 'Live',
     },
+
     {
-      id: 'senior',
-      labelEn: '40+ Senior Care & Longevity',
-      labelMy: '၄၀+ သက်ကြီးကျန်းမာရေး',
-      shortEn: '40+ Care',
-      shortMy: '၄၀+ စောင့်ရှောက်',
-      descEn: 'Hypertension, diabetes, joint stiffness, insomnia & stroke FAST care',
-      descMy: 'သွေးတိုး၊ ဆီးချို၊ အဆစ်ဒူးနာ၊ အိပ်မပျော် နှင့် လေဖြတ် FAST စောင့်ရှောက်မှု',
-      icon: <Activity className="w-4 h-4 text-amber-500" />,
+      id: 'remedies',
+      labelEn: 'Symptoms & Home Remedies',
+      labelMy: 'ရောဂါလက္ခဏာများ',
+      shortEn: 'Remedies',
+      shortMy: 'ရောဂါလက္ခဏာ',
+      descEn: 'Home remedies for runny nose, cough, stomach ache, skin, toothache & headache',
+      descMy: 'နှာစီး၊ ချောင်းဆိုး၊ ဗိုက်အောင့်၊ အရေပြား၊ သွားကိုက်၊ ခေါင်းကိုက် သဘာဝ ဆေးနည်းများ',
+      icon: <Thermometer className="w-4 h-4 text-teal-600 dark:text-teal-400" />,
       isBadge: true,
-      badgeText: '40+',
+      badgeText: 'Remedies',
     },
     {
       id: 'plants',
-      labelEn: 'Herbs Directory (120+)',
-      labelMy: 'ဆေးဖက်ဝင်အပင်များ (၁၂၀+)',
-      shortEn: 'Plants',
-      shortMy: 'အပင်များ',
+      labelEn: 'Natural Medicinal Herbs Directory',
+      labelMy: 'သဘာဝဆေးဖက်ဝင်အပင်များ',
+      shortEn: 'Herbs',
+      shortMy: 'ဆေးဖက်ဝင်အပင်',
       descEn: '120+ botanical monographs, active compounds & preparation guides',
       descMy: 'အသိအမှတ်ပြု ဆေးဖက်ဝင်အပင် ၁၂၀+ နှင့် ဓာတုဒြပ်ပေါင်း၊ သောက်သုံးနည်းများ',
       icon: <BookOpen className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />,
@@ -113,9 +116,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       id: 'symptoms',
       labelEn: 'First Aid Emergency Protocols',
-      labelMy: 'အရေးပေါ် ရှေးဦးပြုစုနည်းများ',
+      labelMy: 'ရှေးဦးသူနာပြု',
       shortEn: 'First Aid',
-      shortMy: 'ရှေးဦးပြုစု',
+      shortMy: 'ရှေးဦးသူနာပြု',
       descEn: 'Emergency triage for burns, snakebites, fevers & cardiac care',
       descMy: 'မီးလောင်၊ မြွေကိုက်၊ ဖျားနာ၊ နှလုံးရပ် အရေးပေါ် အသက်ကယ်အဆင့်ဆင့် လမ်းညွှန်',
       icon: <HeartPulse className="w-4 h-4 text-red-500" />,
@@ -134,15 +137,15 @@ export const Navbar: React.FC<NavbarProps> = ({
     },
     {
       id: 'assistant',
-      labelEn: 'Doctor AI (Gemini Chat & Medicine Vision)',
-      labelMy: 'Doctor AI (Gemini ဆွေးနွေးမှုနှင့် ဓာတ်ပုံစစ်ဆေးစက်)',
-      shortEn: 'Doctor AI',
-      shortMy: 'Doctor AI',
-      descEn: 'Gemini Chat with medicine photo scanning, audio dosage instructions & consultation history',
-      descMy: 'Gemini ဒီဇိုင်းဖြင့် ဆေးဝါးဓာတ်ပုံစစ်ဆေးခြင်း၊ မေးမြန်းမှုမှတ်တမ်း ရှာဖွေခြင်းနှင့် အသံဖတ်ပြချက်',
-      icon: <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />,
+      labelEn: 'Home Treatment Advisor',
+      labelMy: 'အိမ်တွင်းကုသမှုအကြံပေး',
+      shortEn: 'Advisor',
+      shortMy: 'အကြံပေး',
+      descEn: 'Search medicines, symptoms, medicine photo scanning & history',
+      descMy: 'ဆေးဝါး၊ ရောဂါလက္ခဏာများ ရှာဖွေခြင်း၊ ဓာတ်ပုံစစ်ဆေးခြင်းနှင့် မှတ်တမ်း',
+      icon: <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />,
       isBadge: true,
-      badgeText: 'Gemini',
+      badgeText: 'AI',
     },
     {
       id: 'admin',
@@ -150,8 +153,8 @@ export const Navbar: React.FC<NavbarProps> = ({
       labelMy: 'စီမံခန့်ခွဲမှုနှင့် ပို့စ်တင်ရန် (Admin Panel)',
       shortEn: 'Admin',
       shortMy: 'စီမံခန့်ခွဲ',
-      descEn: 'Update 40+ care, plants, first aid, hotlines & upload Supabase posts',
-      descMy: 'အသက် ၄၀+၊ ဆေးပင်၊ ရှေးဦးပြုစုနည်း၊ ဖုန်းနံပါတ်များနှင့် ပို့စ်များကို စီမံပြင်ဆင်ရန်',
+      descEn: 'Manage remedies, plants, first aid, hotlines & upload Supabase posts',
+      descMy: 'ဆေးနည်း၊ ဆေးပင်၊ ရှေးဦးပြုစုနည်း၊ ဖုန်းနံပါတ်များနှင့် ပို့စ်များကို စီမံပြင်ဆင်ရန်',
       icon: <UploadCloud className="w-4 h-4 text-emerald-500" />,
       isBadge: true,
       badgeText: 'Admin',
@@ -294,7 +297,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 {/* 0. Account Authentication & Admin Status */}
                 <div className="space-y-2">
                   <div className="text-[11px] font-bold text-neutral-400 dark:text-neutral-500 comfort:text-[#8c7e6d] uppercase tracking-wider font-myanmar">
-                    {language === 'my' ? 'အကောင့်နှင့် စီမံခန့်ခွဲခွင့် (Google Auth)' : 'Account & Administrator'}
+                    {language === 'my' ? 'အကောင့်နှင့် စီမံခန့်ခွဲခွင့်' : 'Account & Administrator'}
                   </div>
                   <div className="p-3 bg-neutral-100 dark:bg-neutral-900 comfort:bg-[#f2e9d8] rounded-2xl border border-border-subtle dark:border-neutral-800 comfort:border-[#ded4c1] flex items-center justify-between">
                     <LoginButton language={language} />

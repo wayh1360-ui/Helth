@@ -15,7 +15,7 @@ import {
   HelpCircle,
   Sparkles
 } from 'lucide-react';
-import { Herb, EmergencyProtocol, EmergencyHotline, SeniorHealthTopic } from '../types';
+import { Herb, EmergencyProtocol, EmergencyHotline, CustomSymptomRemedy } from '../types';
 import {
   getManagedHerbs,
   saveManagedHerbs,
@@ -26,21 +26,21 @@ import {
   getManagedHotlines,
   saveManagedHotlines,
   resetHotlinesToDefault,
-  getManagedSeniorTopics,
-  saveManagedSeniorTopics,
-  resetSeniorTopicsToDefault
+  getManagedSymptoms,
+  saveManagedSymptoms,
+  resetSymptomsToDefault
 } from '../lib/contentManager';
 
 interface SectionManagerProps {
   language: 'en' | 'my';
-  initialTab?: 'plants' | 'senior' | 'firstaid' | 'hotlines';
+  initialTab?: 'plants' | 'symptoms' | 'firstaid' | 'hotlines';
 }
 
 export const SectionContentManager: React.FC<SectionManagerProps> = ({ 
   language,
   initialTab = 'plants'
 }) => {
-  const [activeTab, setActiveTab] = useState<'plants' | 'senior' | 'firstaid' | 'hotlines'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'plants' | 'symptoms' | 'firstaid' | 'hotlines'>(initialTab);
   const [successMsg, setSuccessMsg] = useState('');
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export const SectionContentManager: React.FC<SectionManagerProps> = ({
 
   // Data states
   const [herbs, setHerbs] = useState<Herb[]>(() => getManagedHerbs());
-  const [seniorTopics, setSeniorTopics] = useState<SeniorHealthTopic[]>(() => getManagedSeniorTopics());
+  const [symptoms, setSymptoms] = useState<CustomSymptomRemedy[]>(() => getManagedSymptoms());
   const [protocols, setProtocols] = useState<EmergencyProtocol[]>(() => getManagedProtocols());
   const [hotlines, setHotlines] = useState<EmergencyHotline[]>(() => getManagedHotlines());
 
@@ -57,8 +57,8 @@ export const SectionContentManager: React.FC<SectionManagerProps> = ({
   const [editingHerb, setEditingHerb] = useState<Herb | null>(null);
   const [isNewHerb, setIsNewHerb] = useState(false);
 
-  const [editingSenior, setEditingSenior] = useState<SeniorHealthTopic | null>(null);
-  const [isNewSenior, setIsNewSenior] = useState(false);
+  const [editingSymptom, setEditingSymptom] = useState<CustomSymptomRemedy | null>(null);
+  const [isNewSymptom, setIsNewSymptom] = useState(false);
 
   const [editingProtocol, setEditingProtocol] = useState<EmergencyProtocol | null>(null);
   const [isNewProtocol, setIsNewProtocol] = useState(false);
@@ -103,36 +103,36 @@ export const SectionContentManager: React.FC<SectionManagerProps> = ({
     showNotification(language === 'my' ? 'မူလအတိုင်း ပြန်လည်ထားရှိပြီးပါပြီ' : 'Herbs reset to default');
   };
 
-  // --- SENIOR TOPIC HANDLERS ---
-  const handleSaveSenior = (e: React.FormEvent) => {
+  // --- SYMPTOMS & REMEDIES HANDLERS ---
+  const handleSaveSymptom = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingSenior) return;
-    let updated: SeniorHealthTopic[];
-    if (isNewSenior) {
-      updated = [editingSenior, ...seniorTopics];
+    if (!editingSymptom) return;
+    let updated: CustomSymptomRemedy[];
+    if (isNewSymptom) {
+      updated = [editingSymptom, ...symptoms];
     } else {
-      updated = seniorTopics.map(s => (s.id === editingSenior.id ? editingSenior : s));
+      updated = symptoms.map(s => (s.id === editingSymptom.id ? editingSymptom : s));
     }
-    setSeniorTopics(updated);
-    saveManagedSeniorTopics(updated);
-    setEditingSenior(null);
-    setIsNewSenior(false);
-    showNotification(language === 'my' ? '၄၀+ သက်ကြီးကျန်းမာရေး အကြောင်းအရာကို သိမ်းဆည်းပြီးပါပြီ' : '40+ Care topic updated successfully!');
+    setSymptoms(updated);
+    saveManagedSymptoms(updated);
+    setEditingSymptom(null);
+    setIsNewSymptom(false);
+    showNotification(language === 'my' ? 'ရောဂါလက္ခဏာနှင့် ဆေးနည်းကို သိမ်းဆည်းပြီးပါပြီ' : 'Symptom & remedy updated successfully!');
   };
 
-  const handleDeleteSenior = (id: string) => {
-    if (!window.confirm(language === 'my' ? 'ဖျက်ရန် သေချာပါသလား?' : 'Delete this 40+ topic?')) return;
-    const updated = seniorTopics.filter(s => s.id !== id);
-    setSeniorTopics(updated);
-    saveManagedSeniorTopics(updated);
-    showNotification(language === 'my' ? 'ဖျက်သိမ်းပြီးပါပြီ' : 'Topic deleted');
+  const handleDeleteSymptom = (id: string) => {
+    if (!window.confirm(language === 'my' ? 'ဤရောဂါလက္ခဏာကို ဖျက်ရန် သေချာပါသလား?' : 'Delete this symptom entry?')) return;
+    const updated = symptoms.filter(s => s.id !== id);
+    setSymptoms(updated);
+    saveManagedSymptoms(updated);
+    showNotification(language === 'my' ? 'ဖျက်သိမ်းပြီးပါပြီ' : 'Symptom deleted');
   };
 
-  const handleResetSenior = () => {
-    if (!window.confirm(language === 'my' ? 'မူလအတိုင်း ပြန်လည်ထားရှိမည်လား?' : 'Reset all 40+ topics to default?')) return;
-    const def = resetSeniorTopicsToDefault();
-    setSeniorTopics(def);
-    showNotification(language === 'my' ? 'မူလအတိုင်း ပြန်လည်ထားရှိပြီးပါပြီ' : 'Senior topics reset to default');
+  const handleResetSymptoms = () => {
+    if (!window.confirm(language === 'my' ? 'မူလ ဆေးနည်းများအတိုင်း ပြန်လည်ထားရှိမည်လား?' : 'Reset all symptoms & remedies to default?')) return;
+    const def = resetSymptomsToDefault();
+    setSymptoms(def);
+    showNotification(language === 'my' ? 'မူလအတိုင်း ပြန်လည်ထားရှိပြီးပါပြီ' : 'Symptoms reset to default');
   };
 
   // --- FIRST AID PROTOCOL HANDLERS ---
@@ -213,8 +213,8 @@ export const SectionContentManager: React.FC<SectionManagerProps> = ({
           </h2>
           <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 mt-1">
             {language === 'my'
-              ? '၄၀+ စောင့်ရှောက်မှု၊ ဆေးဖက်ဝင်အပင်များ၊ ရှေးဦးပြုစုနည်းနှင့် အရေးပေါ်ဖုန်းများကို တိုက်ရိုက် မွမ်းမံ/ပြင်ဆင်/အသစ်ထည့်နိုင်ပါသည်'
-              : 'Add, update or delete entries in 40+ Care, Medicinal Plants, First Aid Protocols, and Emergency Phone Numbers.'}
+              ? 'ရောဂါလက္ခဏာများ၊ ဆေးဖက်ဝင်အပင်များ၊ ရှေးဦးပြုစုနည်းနှင့် အရေးပေါ်ဖုန်းများကို တိုက်ရိုက် မွမ်းမံ/ပြင်ဆင်/အသစ်ထည့်နိုင်ပါသည်'
+              : 'Add, update or delete entries in Symptoms & Remedies, Medicinal Plants, First Aid Protocols, and Emergency Phone Numbers.'}
           </p>
         </div>
 
@@ -244,15 +244,15 @@ export const SectionContentManager: React.FC<SectionManagerProps> = ({
 
         <button
           type="button"
-          onClick={() => { setActiveTab('senior'); setEditingSenior(null); }}
+          onClick={() => { setActiveTab('symptoms'); setEditingSymptom(null); }}
           className={`py-3 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer ${
-            activeTab === 'senior'
+            activeTab === 'symptoms'
               ? 'bg-white dark:bg-neutral-900 comfort:bg-[#faf6ee] text-black dark:text-white comfort:text-[#231f1a] shadow-sm'
               : 'text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white'
           }`}
         >
-          <Activity className="w-4 h-4 text-amber-500" />
-          <span>{language === 'my' ? '၄၀+ ကျန်းမာရေး' : '40+ Care'} ({seniorTopics.length})</span>
+          <Activity className="w-4 h-4 text-teal-600" />
+          <span>{language === 'my' ? 'ရောဂါလက္ခဏာများ' : 'Symptoms'} ({symptoms.length})</span>
         </button>
 
         <button
@@ -569,22 +569,24 @@ export const SectionContentManager: React.FC<SectionManagerProps> = ({
         </div>
       )}
 
-      {/* ================= SECTION 2: 40+ SENIOR CARE ================= */}
-      {activeTab === 'senior' && (
+      {/* ================= SECTION 2: SYMPTOMS & REMEDIES ================= */}
+      {activeTab === 'symptoms' && (
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h3 className="text-base font-bold text-black dark:text-white comfort:text-[#231f1a]">
-                {language === 'my' ? '၄၀+ သက်ကြီးကျန်းမာရေး စောင့်ရှောက်မှု စီမံခန့်ခွဲရန်' : 'Manage 40+ Senior Care Topics'}
+                {language === 'my' ? 'ရောဂါလက္ခဏာများ နှင့် အိမ်တွင်းဆေးနည်းများ စီမံခန့်ခွဲရန်' : 'Manage Symptoms & Home Remedies'}
               </h3>
               <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                {language === 'my' ? 'သွေးတိုး၊ ဆီးချို၊ အဆစ်ဒူးနာ၊ အိပ်မပျော် နှင့် သွေးပေါင်ချိန် ညွှန်ကိန်းများကို မွမ်းမံနိုင်ပါသည်' : 'Update blood pressure metrics, diabetes herbal care & longevity tips.'}
+                {language === 'my' 
+                  ? 'နှာစီး၊ ချောင်းဆိုး၊ ဗိုက်အောင့်၊ အရေပြား၊ သွားကိုက်၊ ခေါင်းကိုက် နှင့် အခြားရောဂါလက္ခဏာ ဆေးနည်းများကို အသစ်ထည့်/ပြင်ဆင်နိုင်ပါသည်' 
+                  : 'Add, edit, or remove home remedies and precaution guidelines for symptoms.'}
               </p>
             </div>
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={handleResetSenior}
+                onClick={handleResetSymptoms}
                 className="px-3.5 py-1.5 rounded-full border border-neutral-300 dark:border-neutral-700 text-xs font-bold hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-300 flex items-center gap-1.5 transition cursor-pointer"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
@@ -593,56 +595,40 @@ export const SectionContentManager: React.FC<SectionManagerProps> = ({
               <button
                 type="button"
                 onClick={() => {
-                  setEditingSenior({
-                    id: `senior-${Date.now()}`,
-                    titleEn: '',
-                    titleMy: '',
-                    subtitleEn: '',
-                    subtitleMy: '',
-                    icon: 'activity',
-                    category: 'cardiovascular',
-                    vitalGuide: {
-                      metric: 'Blood Pressure / Pulse',
-                      normal: '< 120/80 mmHg',
-                      warning: '130-139 / 80-89 mmHg',
-                      crisis: '≥ 180 / ≥ 120 mmHg'
-                    },
-                    herbalRemedies: [
-                      {
-                        herbId: 'ginger',
-                        nameEn: 'Ginger Tea',
-                        nameMy: 'ချင်းနွေးနွေး',
-                        actionEn: 'Cardiovascular relaxation',
-                        actionMy: 'သွေးကြောပြေလျော့စေခြင်း',
-                        prepEn: 'Boil ginger slices in hot water.',
-                        prepMy: 'ရေနွေးဆူဆူတွင် ချင်းခတ်၍ သောက်ပါ'
-                      }
-                    ],
-                    lifestyleTipsEn: ['Drink 2L clean warm water daily', 'Gentle 30-min walking'],
-                    lifestyleTipsMy: ['တစ်နေ့လျှင် ရေနွေး ၂ လီတာခန့် သောက်ပါ', 'မနက်ခင်း လမ်းလျှောက်ပါ'],
-                    precautionsEn: ['Consult physician if readings persist above normal'],
-                    precautionsMy: ['ဆရာဝန်နှင့် ပုံမှန်ပြသပါ']
+                  setEditingSymptom({
+                    id: `sym-${Date.now()}`,
+                    symptomName: '',
+                    symptomNameMy: '',
+                    category: 'general',
+                    categoryMy: 'အထွေထွေ',
+                    description: '',
+                    descriptionMy: '',
+                    remedies: [],
+                    remediesMy: [],
+                    precautions: [],
+                    precautionsMy: [],
+                    isCustom: true
                   });
-                  setIsNewSenior(true);
+                  setIsNewSymptom(true);
                 }}
-                className="px-4 py-1.5 rounded-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition cursor-pointer"
+                className="px-4 py-1.5 rounded-full bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>{language === 'my' ? '+ ၄၀+ အကြောင်းအရာအသစ်' : '+ Add 40+ Topic'}</span>
+                <span>{language === 'my' ? '+ ရောဂါလက္ခဏာသစ် ထည့်ရန်' : '+ Add Symptom'}</span>
               </button>
             </div>
           </div>
 
-          {/* Senior Topic Edit Form */}
-          {editingSenior && (
-            <form onSubmit={handleSaveSenior} className="p-5 sm:p-6 rounded-2xl bg-neutral-50 dark:bg-neutral-800/60 comfort:bg-[#f2e9d8]/60 border border-amber-500/40 space-y-4">
+          {/* Symptom Edit Form */}
+          {editingSymptom && (
+            <form onSubmit={handleSaveSymptom} className="p-5 sm:p-6 rounded-2xl bg-neutral-50 dark:bg-neutral-800/60 comfort:bg-[#f2e9d8]/60 border border-teal-500/40 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-neutral-200 dark:border-neutral-700">
-                <h4 className="font-bold text-sm text-amber-800 dark:text-amber-300">
-                  {isNewSenior ? '၄၀+ ခေါင်းစဉ်အသစ် ထည့်သွင်းခြင်း' : '၄၀+ ခေါင်းစဉ် ပြင်ဆင်ခြင်း'}
+                <h4 className="font-bold text-sm text-teal-800 dark:text-teal-300">
+                  {isNewSymptom ? 'ရောဂါလက္ခဏာသစ် ထည့်သွင်းခြင်း' : 'ရောဂါလက္ခဏာ ပြင်ဆင်ခြင်း'}
                 </h4>
                 <button
                   type="button"
-                  onClick={() => setEditingSenior(null)}
+                  onClick={() => setEditingSymptom(null)}
                   className="p-1 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-500"
                 >
                   <X className="w-4 h-4" />
@@ -651,138 +637,154 @@ export const SectionContentManager: React.FC<SectionManagerProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold mb-1">{language === 'my' ? 'မြန်မာခေါင်းစဉ်' : 'Title (Myanmar)'} *</label>
+                  <label className="block text-xs font-bold mb-1">{language === 'my' ? 'ရောဂါလက္ခဏာ အမည် (မြန်မာ)' : 'Symptom Name (Myanmar)'} *</label>
                   <input
                     type="text"
                     required
-                    value={editingSenior.titleMy}
-                    onChange={e => setEditingSenior({ ...editingSenior, titleMy: e.target.value })}
+                    value={editingSymptom.symptomNameMy}
+                    onChange={e => setEditingSymptom({ ...editingSymptom, symptomNameMy: e.target.value })}
                     className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900"
-                    placeholder="ဥပမာ - ၄၀+ သွေးတိုးကျန်းမာရေး ထိန်းသိမ်းနည်း"
+                    placeholder="ဥပမာ - ခေါင်းမူးခြင်း"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold mb-1">{language === 'my' ? 'အင်္ဂလိပ်ခေါင်းစဉ်' : 'Title (English)'} *</label>
+                  <label className="block text-xs font-bold mb-1">{language === 'my' ? 'ရောဂါလက္ခဏာ အမည် (အင်္ဂလိပ်)' : 'Symptom Name (English)'} *</label>
                   <input
                     type="text"
                     required
-                    value={editingSenior.titleEn}
-                    onChange={e => setEditingSenior({ ...editingSenior, titleEn: e.target.value })}
+                    value={editingSymptom.symptomName}
+                    onChange={e => setEditingSymptom({ ...editingSymptom, symptomName: e.target.value })}
                     className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900"
-                    placeholder="e.g. Hypertension & Vascular Care"
+                    placeholder="e.g. Dizziness / Vertigo"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold mb-1">{language === 'my' ? 'ခေါင်းစဉ်ခွဲ (Subtitle Myanmar)' : 'Subtitle (Myanmar)'}</label>
+                  <label className="block text-xs font-bold mb-1">{language === 'my' ? 'အမျိုးအစား အမည် (မြန်မာ)' : 'Category Name (Myanmar)'}</label>
                   <input
                     type="text"
-                    value={editingSenior.subtitleMy}
-                    onChange={e => setEditingSenior({ ...editingSenior, subtitleMy: e.target.value })}
+                    value={editingSymptom.categoryMy}
+                    onChange={e => setEditingSymptom({ ...editingSymptom, categoryMy: e.target.value })}
                     className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900"
+                    placeholder="ဥပမာ - အသက်ရှူလမ်းကြောင်း၊ အစာခြေစနစ်"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold mb-1">{language === 'my' ? 'ကဏ္ဍ (Category)' : 'Category'}</label>
+                  <label className="block text-xs font-bold mb-1">{language === 'my' ? 'ကဏ္ဍ Key (Category)' : 'Category Key'}</label>
                   <select
-                    value={editingSenior.category}
-                    onChange={e => setEditingSenior({ ...editingSenior, category: e.target.value as any })}
+                    value={editingSymptom.category}
+                    onChange={e => setEditingSymptom({ ...editingSymptom, category: e.target.value })}
                     className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900"
                   >
-                    <option value="cardiovascular">Cardiovascular (သွေးတိုးနှင့် နှလုံး)</option>
-                    <option value="metabolic">Metabolic (ဆီးချို/သွေးချို)</option>
-                    <option value="musculoskeletal">Musculoskeletal (အရိုးအဆစ်ဒူးနာ)</option>
-                    <option value="lifestyle">Lifestyle & Sleep (အိပ်စက်ခြင်းနှင့် အာဟာရ)</option>
+                    <option value="respiratory">Respiratory (အသက်ရှူလမ်းကြောင်း)</option>
+                    <option value="digestive">Digestive (အစာခြေစနစ်)</option>
+                    <option value="dermatology">Dermatology (အရေပြား)</option>
+                    <option value="dental">Dental (သွားနှင့် ခံတွင်း)</option>
+                    <option value="neurology">Neurology (ဦးနှောက်နှင့် အာရုံကြော)</option>
+                    <option value="general">General (အထွေထွေ)</option>
                   </select>
                 </div>
               </div>
 
-              {/* Vital Guide Metric Inputs */}
-              {editingSenior.vitalGuide && (
-                <div className="p-3.5 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 space-y-2">
-                  <span className="text-xs font-bold text-neutral-700 dark:text-neutral-300">
-                    {language === 'my' ? 'တိုင်းတာစစ်ဆေးမှု ညွှန်းကိန်းများ (Vital Guide Metrics)' : 'Vital Guide Metrics'}
-                  </span>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    <div>
-                      <span className="text-[11px] text-emerald-600 block">{language === 'my' ? 'ပုံမှန် (Normal)' : 'Normal'}</span>
-                      <input
-                        type="text"
-                        value={editingSenior.vitalGuide.normal}
-                        onChange={e => setEditingSenior({
-                          ...editingSenior,
-                          vitalGuide: { ...editingSenior.vitalGuide!, normal: e.target.value }
-                        })}
-                        className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-neutral-300 dark:border-neutral-700"
-                      />
-                    </div>
-                    <div>
-                      <span className="text-[11px] text-amber-600 block">{language === 'my' ? 'သတိထားရန် (Warning)' : 'Warning'}</span>
-                      <input
-                        type="text"
-                        value={editingSenior.vitalGuide.warning}
-                        onChange={e => setEditingSenior({
-                          ...editingSenior,
-                          vitalGuide: { ...editingSenior.vitalGuide!, warning: e.target.value }
-                        })}
-                        className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-neutral-300 dark:border-neutral-700"
-                      />
-                    </div>
-                    <div>
-                      <span className="text-[11px] text-red-600 block">{language === 'my' ? 'စိုးရိမ်ရ (Crisis)' : 'Crisis'}</span>
-                      <input
-                        type="text"
-                        value={editingSenior.vitalGuide.crisis}
-                        onChange={e => setEditingSenior({
-                          ...editingSenior,
-                          vitalGuide: { ...editingSenior.vitalGuide!, crisis: e.target.value }
-                        })}
-                        className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-neutral-300 dark:border-neutral-700"
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
+              <div>
+                <label className="block text-xs font-bold mb-1">{language === 'my' ? 'လက္ခဏာ ဖော်ပြချက် (မြန်မာ)' : 'Description (Myanmar)'}</label>
+                <textarea
+                  rows={2}
+                  value={editingSymptom.descriptionMy}
+                  onChange={e => setEditingSymptom({ ...editingSymptom, descriptionMy: e.target.value })}
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900"
+                  placeholder="လက္ခဏာအကြောင်း အတိုချုပ်"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold mb-1">
+                  {language === 'my' ? 'အိမ်တွင်း ဆေးနည်းများ (တစ်ကြောင်းလျှင် နည်းတစ်ခုစီ ရေးပါ)' : 'Home Remedies (One per line)'} *
+                </label>
+                <textarea
+                  rows={4}
+                  required
+                  value={editingSymptom.remediesMy.join('\n')}
+                  onChange={e => {
+                    const lines = e.target.value.split('\n');
+                    setEditingSymptom({
+                      ...editingSymptom,
+                      remediesMy: lines,
+                      remedies: lines
+                    });
+                  }}
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 font-myanmar"
+                  placeholder="ချင်းရေနွေးကြမ်း သောက်ပါ&#10;ဆားနွေးရေဖြင့် ပလုတ်ကျင်းပါ"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold mb-1">
+                  {language === 'my' ? 'သတိပြုရန်အချက်များ (တစ်ကြောင်းလျှင် တစ်ခုစီ ရေးပါ)' : 'Precautions (One per line)'}
+                </label>
+                <textarea
+                  rows={2}
+                  value={(editingSymptom.precautionsMy || []).join('\n')}
+                  onChange={e => {
+                    const lines = e.target.value.split('\n');
+                    setEditingSymptom({
+                      ...editingSymptom,
+                      precautionsMy: lines,
+                      precautions: lines
+                    });
+                  }}
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 font-myanmar"
+                  placeholder="အဖျား ၃ ရက်ထက်ပိုပါက ဆရာဝန်ပြပါ"
+                />
+              </div>
 
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"
-                  onClick={() => setEditingSenior(null)}
+                  onClick={() => setEditingSymptom(null)}
                   className="px-4 py-2 rounded-xl text-xs font-bold bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300"
                 >
                   {language === 'my' ? 'မလုပ်တော့ပါ' : 'Cancel'}
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white flex items-center gap-1.5"
+                  className="px-5 py-2 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-700 text-white flex items-center gap-1.5"
                 >
                   <Save className="w-3.5 h-3.5" />
-                  <span>{language === 'my' ? 'သိမ်းမည်' : 'Save Topic'}</span>
+                  <span>{language === 'my' ? 'သိမ်းမည်' : 'Save Symptom'}</span>
                 </button>
               </div>
             </form>
           )}
 
-          {/* Senior Topics List */}
+          {/* Symptoms List */}
           <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
-            {seniorTopics.map(topic => (
+            {symptoms.map(item => (
               <div
-                key={topic.id}
+                key={item.id}
                 className="p-4 rounded-2xl bg-neutral-50 dark:bg-neutral-800/50 comfort:bg-[#f2e9d8]/50 border border-neutral-200 dark:border-neutral-700/60 flex items-center justify-between gap-3"
               >
                 <div>
-                  <h5 className="font-bold text-xs sm:text-sm text-black dark:text-white">
-                    {topic.titleMy} <span className="text-[11px] text-neutral-400 font-normal">({topic.titleEn})</span>
-                  </h5>
-                  <p className="text-[11px] text-neutral-500 mt-0.5">{topic.subtitleMy || topic.subtitleEn}</p>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded-md bg-teal-500/10 text-teal-800 dark:text-teal-300 text-[10px] font-bold">
+                      {item.categoryMy || item.category}
+                    </span>
+                    <h5 className="font-bold text-xs sm:text-sm text-black dark:text-white">
+                      {item.symptomNameMy} <span className="text-[11px] text-neutral-400 font-normal">({item.symptomName})</span>
+                    </h5>
+                  </div>
+                  <p className="text-[11px] text-neutral-500 mt-1 line-clamp-1">{item.descriptionMy || item.description}</p>
+                  <p className="text-[10px] text-teal-700 dark:text-teal-400 mt-0.5 font-semibold">
+                    ဆေးနည်း {item.remediesMy.length} မျိုး ပါဝင်ပါသည်
+                  </p>
                 </div>
 
                 <div className="flex items-center gap-1 shrink-0">
                   <button
                     type="button"
-                    onClick={() => { setEditingSenior(topic); setIsNewSenior(false); }}
+                    onClick={() => { setEditingSymptom(item); setIsNewSymptom(false); }}
                     className="p-2 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-600 dark:text-neutral-300 cursor-pointer"
                     title="Edit"
                   >
@@ -790,7 +792,7 @@ export const SectionContentManager: React.FC<SectionManagerProps> = ({
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleDeleteSenior(topic.id)}
+                    onClick={() => handleDeleteSymptom(item.id)}
                     className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 text-red-600 cursor-pointer"
                     title="Delete"
                   >

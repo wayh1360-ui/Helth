@@ -103,7 +103,49 @@ export function isAuthenticated(): boolean {
 }
 
 /**
- * Trigger Supabase OAuth Sign In with Google Gmail
+ * Sign in with email and password via Supabase Auth
+ */
+export async function signInWithPassword(email: string, password: string): Promise<{ error: string | null }> {
+  try {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      return { error: error.message };
+    }
+    return { error: null };
+  } catch (err: any) {
+    return { error: err?.message || 'Failed to sign in' };
+  }
+}
+
+/**
+ * Sign up with email, password, and full name via Supabase Auth
+ */
+export async function signUpWithPassword(email: string, password: string, fullName?: string): Promise<{ error: string | null }> {
+  try {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: fullName || email.split('@')[0],
+          name: fullName || email.split('@')[0],
+        }
+      }
+    });
+    if (error) {
+      return { error: error.message };
+    }
+    return { error: null };
+  } catch (err: any) {
+    return { error: err?.message || 'Failed to sign up' };
+  }
+}
+
+/**
+ * Legacy Google OAuth fallback (deprecated)
  */
 export async function signInWithGoogle(): Promise<{ error: string | null }> {
   try {
@@ -111,10 +153,6 @@ export async function signInWithGoogle(): Promise<{ error: string | null }> {
       provider: 'google',
       options: {
         redirectTo: window.location.origin,
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent'
-        }
       }
     });
     if (error) {
@@ -223,6 +261,8 @@ export function useSupabaseUser() {
     userEmail: userInfo?.email || null,
     isAdmin: !!userInfo?.isAdmin,
     role: userInfo?.role || 'user',
+    signInWithPassword,
+    signUpWithPassword,
     signInWithGoogle,
     signOut: signOutUser
   };

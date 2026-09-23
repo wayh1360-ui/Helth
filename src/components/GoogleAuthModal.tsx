@@ -2,23 +2,22 @@ import React, { useState } from 'react';
 import { 
   X, 
   LogOut, 
-  ExternalLink, 
-  Check, 
-  Copy, 
   AlertCircle, 
   ShieldCheck, 
-  HelpCircle,
-  Loader2,
-  ChevronDown,
-  ChevronUp,
+  Loader2, 
+  Crown, 
+  User,
   Mail,
-  UserCheck,
-  Crown,
-  User
+  Lock,
+  Eye,
+  EyeOff,
+  UserPlus,
+  LogIn,
+  CheckCircle2
 } from 'lucide-react';
-import { useSupabaseUser, signInWithGoogle, signOutUser, getAdminEmails } from '../lib/supabaseAuth';
+import { useSupabaseUser, signInWithPassword, signUpWithPassword, signOutUser } from '../lib/supabaseAuth';
 
-interface GoogleAuthModalProps {
+export interface GoogleAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   language: 'en' | 'my';
@@ -29,67 +28,121 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
   onClose,
   language
 }) => {
-  const { user, userName, userEmail, userAvatar, isAdmin, loading } = useSupabaseUser();
-  const [signingIn, setSigningIn] = useState(false);
+  const { user, userName, userEmail, userAvatar, isAdmin, loading: authLoading } = useSupabaseUser();
+  const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin');
+  
+  // Form fields
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Status states
+  const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [showSetupGuide, setShowSetupGuide] = useState(false);
-  const [copiedUrl, setCopiedUrl] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   if (!isOpen) return null;
 
-  // Supabase callback URL for this project
-  const supabaseCallbackUrl = 'https://wdezdoqnbvfvwnsuysfn.supabase.co/auth/v1/callback';
-
-  const handleGoogleSignIn = async () => {
-    setSigningIn(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setErrorMessage('');
-    const { error } = await signInWithGoogle();
-    if (error) {
-      console.error('Google sign-in error:', error);
+    setSuccessMessage('');
+
+    if (!email.trim() || !password.trim()) {
       setErrorMessage(
-        language === 'my'
-          ? `Google ဖြင့် ဝင်ရောက်ရာတွင် အမှားဖြစ်ပေါ်ပါသည်: ${error}။ Supabase တွင် Google Provider ဖွင့်ထားခြင်း ရှိမရှိ စစ်ဆေးပါ။`
-          : `Failed to sign in with Google: ${error}. Please ensure Google Provider is configured in Supabase.`
+        language === 'my' 
+          ? 'အီးမေးလ်နှင့် စကားဝှက်ကို ဖြည့်စွက်ပါ' 
+          : 'Please enter both email and password.'
       );
-      setSigningIn(false);
+      return;
     }
-    // Note: If successful, browser redirects to Google OAuth flow
+
+    if (password.length < 6) {
+      setErrorMessage(
+        language === 'my' 
+          ? 'စကားဝှက်သည် အနည်းဆုံး ၆ လုံး ရှိရပါမည်' 
+          : 'Password must be at least 6 characters long.'
+      );
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      if (activeTab === 'signin') {
+        const { error } = await signInWithPassword(email.trim(), password);
+        if (error) {
+          setErrorMessage(
+            language === 'my' 
+              ? `ဝင်ရောက်မှု မအောင်မြင်ပါ: ${error}` 
+              : `Sign in failed: ${error}`
+          );
+        } else {
+          setSuccessMessage(
+            language === 'my' 
+              ? 'အောင်မြင်စွာ ဝင်ရောက်ပြီးပါပြီ' 
+              : 'Signed in successfully!'
+          );
+          setTimeout(() => {
+            onClose();
+          }, 800);
+        }
+      } else {
+        const { error } = await signUpWithPassword(email.trim(), password, fullName.trim());
+        if (error) {
+          setErrorMessage(
+            language === 'my' 
+              ? `အကောင့်သစ် ဖွင့်မရပါ: ${error}` 
+              : `Sign up failed: ${error}`
+          );
+        } else {
+          setSuccessMessage(
+            language === 'my' 
+              ? 'အကောင့်သစ် အောင်မြင်စွာ ဖန်တီးပြီးပါပြီ။ (အီးမေးလ် အတည်ပြုရန် လိုအပ်ပါက စစ်ဆေးပေးပါ)' 
+              : 'Account created successfully! Please check your email for confirmation if required.'
+          );
+          setTimeout(() => {
+            onClose();
+          }, 1500);
+        }
+      }
+    } catch (err: any) {
+      setErrorMessage(err?.message || 'Authentication error occurred.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleSignOut = async () => {
     setErrorMessage('');
+    setSuccessMessage('');
     const { error } = await signOutUser();
     if (error) {
       setErrorMessage(error);
     }
   };
 
-  const handleCopyCallback = () => {
-    navigator.clipboard.writeText(supabaseCallbackUrl);
-    setCopiedUrl(true);
-    setTimeout(() => setCopiedUrl(false), 2000);
-  };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-in fade-in duration-200">
       <div 
-        className="bg-white dark:bg-neutral-900 comfort:bg-[#faf6ee] w-full max-w-lg rounded-3xl border border-border-subtle dark:border-neutral-800 comfort:border-[#ded4c1] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
+        className="bg-white dark:bg-neutral-900 comfort:bg-[#faf6ee] w-full max-w-md rounded-3xl border border-border-subtle dark:border-neutral-800 comfort:border-[#ded4c1] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="p-5 sm:p-6 border-b border-border-subtle dark:border-neutral-800 comfort:border-[#ded4c1] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-neutral-100 dark:bg-neutral-800 comfort:bg-[#f2e9d8] flex items-center justify-center text-red-500 shadow-2xs">
-              <Mail className="w-5 h-5 text-red-500" />
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 dark:bg-emerald-950/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs border border-emerald-500/20">
+              <Lock className="w-5 h-5" />
             </div>
             <div>
               <h3 className="font-extrabold text-lg text-black dark:text-white comfort:text-[#231f1a] font-myanmar">
-                {language === 'my' ? 'Google အကောင့်ဖြင့် ဝင်ရောက်ခြင်း' : 'Google Account Sign In'}
+                {language === 'my' ? 'အကောင့် ဝင်ရောက်ခြင်း / သစ်ဖွင့်ခြင်း' : 'Account Authentication'}
               </h3>
               <p className="text-xs text-neutral-500 dark:text-neutral-400 font-myanmar">
                 {language === 'my' 
-                  ? 'Supabase Authentication မှတဆင့် Gmail ဖြင့် ဝင်ရောက်ပါ' 
-                  : 'Authenticated via Supabase Google OAuth'}
+                  ? 'အီးမေးလ်နှင့် စကားဝှက်ဖြင့် အကောင့်ဝင်ရောက်ပါ' 
+                  : 'Sign in with your Email and Password'}
               </p>
             </div>
           </div>
@@ -105,13 +158,6 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
 
         {/* Content */}
         <div className="p-5 sm:p-6 overflow-y-auto space-y-5">
-          {errorMessage && (
-            <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 text-xs flex items-start gap-2.5 font-myanmar leading-relaxed">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              <div className="flex-1">{errorMessage}</div>
-            </div>
-          )}
-
           {user ? (
             /* Logged-in profile view with Admin vs User role status */
             <div className="space-y-4">
@@ -162,12 +208,12 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
                   <p className="mt-2 text-xs font-myanmar leading-relaxed text-neutral-600 dark:text-neutral-300">
                     {isAdmin ? (
                       language === 'my' 
-                        ? '✅ သင့် Gmail သည် Admin အဆင့်ဖြစ်သဖြင့် ပိုစ့်တင်ခြင်း၊ ဆေးကျမ်းများနှင့် ကဏ္ဍများ စီမံခွင့် အပြည့်အဝ ရရှိထားပါသည်။'
+                        ? '✅ သင့် အကောင့်သည် Admin အဆင့်ဖြစ်သဖြင့် ပိုစ့်တင်ခြင်း၊ ဆေးကျမ်းများနှင့် ကဏ္ဍများ စီမံခွင့် ရရှိထားပါသည်။'
                         : '✅ Admin privileges verified: Full access to create/edit posts, herbal monographs, and directories.'
                     ) : (
                       language === 'my'
-                        ? 'ℹ️ သင့် Gmail သည် ပုံမှန်အသုံးပြုသူအဆင့်ဖြစ်ပါသည်။ ကျန်းမာရေးဗဟုသုတများ ဖတ်ရှုနိုင်သော်လည်း ပိုစ့်တင်ရန် Admin Mail ဖြင့် ဝင်ရောက်ရန် လိုအပ်ပါသည်။'
-                        : 'ℹ️ Standard user profile active. To access clinical posting and database controls, sign in with an authorized Admin email.'
+                        ? 'ℹ️ သင့် အကောင့်သည် ပုံမှန်အသုံးပြုသူအဆင့်ဖြစ်ပါသည်။ ပိုစ့်တင်ရန် Admin Mail ဖြင့် ဝင်ရောက်ရန် လိုအပ်ပါသည်။'
+                        : 'ℹ️ Standard user profile active. To access clinical posting controls, sign in with an authorized Admin email.'
                     )}
                   </p>
                 </div>
@@ -185,134 +231,153 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
               </div>
             </div>
           ) : (
-            /* Login view */
+            /* Login & Sign Up view */
             <div className="space-y-4">
-              <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 comfort:text-[#645a4e] font-myanmar leading-relaxed">
-                {language === 'my'
-                  ? 'သင့် Google (Gmail) အကောင့်ဖြင့် တိုက်ရိုက်ဝင်ရောက်ပြီး ကျန်းမာရေး သတင်းလွှာများ၊ ပို့စ်များနှင့် ကဏ္ဍများကို စီမံခန့်ခွဲနိုင်ပါသည်။'
-                  : 'Sign in directly with your Google Gmail account to manage health bulletins, create dynamic posts, and update care modules.'}
-              </p>
+              {/* Tab Selector */}
+              <div className="flex p-1 bg-neutral-100 dark:bg-neutral-800 comfort:bg-[#f2e9d8] rounded-2xl border border-neutral-200 dark:border-neutral-700">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('signin');
+                    setErrorMessage('');
+                    setSuccessMessage('');
+                  }}
+                  className={`flex-1 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 font-myanmar ${
+                    activeTab === 'signin'
+                      ? 'bg-white dark:bg-neutral-900 comfort:bg-[#faf6ee] text-black dark:text-white shadow-xs'
+                      : 'text-neutral-500 hover:text-black dark:hover:text-white'
+                  }`}
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  <span>{language === 'my' ? 'ဝင်ရောက်ရန်' : 'Sign In'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('signup');
+                    setErrorMessage('');
+                    setSuccessMessage('');
+                  }}
+                  className={`flex-1 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 font-myanmar ${
+                    activeTab === 'signup'
+                      ? 'bg-white dark:bg-neutral-900 comfort:bg-[#faf6ee] text-black dark:text-white shadow-xs'
+                      : 'text-neutral-500 hover:text-black dark:hover:text-white'
+                  }`}
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span>{language === 'my' ? 'အကောင့်သစ်ဖွင့်ရန်' : 'Sign Up'}</span>
+                </button>
+              </div>
 
-              {/* Official-style Google Sign-In Button */}
-              <button
-                type="button"
-                onClick={handleGoogleSignIn}
-                disabled={signingIn || loading}
-                className="w-full py-3.5 px-4 rounded-2xl bg-white dark:bg-neutral-800 comfort:bg-[#f2e9d8] hover:bg-neutral-50 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-100 comfort:text-[#231f1a] font-bold text-sm flex items-center justify-center gap-3 transition shadow-sm border border-neutral-300 dark:border-neutral-700 comfort:border-[#ded4c1] cursor-pointer disabled:opacity-50"
-              >
-                {signingIn ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin text-neutral-600" />
-                    <span className="font-myanmar">{language === 'my' ? 'Google သို့ ချိတ်ဆက်နေသည်...' : 'Connecting to Google...'}</span>
-                  </>
-                ) : (
-                  <>
-                    {/* Multi-color Google SVG Icon */}
-                    <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
-                      <path
-                        fill="#4285F4"
-                        d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"
+              {/* Notification Alerts */}
+              {errorMessage && (
+                <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 text-xs flex items-start gap-2.5 font-myanmar leading-relaxed">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <div className="flex-1">{errorMessage}</div>
+                </div>
+              )}
+
+              {successMessage && (
+                <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 text-emerald-700 dark:text-emerald-300 text-xs flex items-start gap-2.5 font-myanmar leading-relaxed">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-500" />
+                  <div className="flex-1">{successMessage}</div>
+                </div>
+              )}
+
+              {/* Auth Form */}
+              <form onSubmit={handleSubmit} className="space-y-3.5">
+                {activeTab === 'signup' && (
+                  <div>
+                    <label className="block text-xs font-bold text-neutral-700 dark:text-neutral-300 mb-1 font-myanmar">
+                      {language === 'my' ? 'အမည် (Full Name):' : 'Full Name:'}
+                    </label>
+                    <div className="relative">
+                      <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
+                      <input
+                        type="text"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder={language === 'my' ? 'ဥပမာ - မောင်မောင်' : 'e.g. John Doe'}
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-neutral-50 dark:bg-neutral-800 comfort:bg-[#f2e9d8] border border-neutral-300 dark:border-neutral-700 text-xs text-black dark:text-white focus:outline-hidden focus:ring-2 focus:ring-emerald-500/50 transition font-myanmar"
                       />
-                      <path
-                        fill="#34A853"
-                        d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"
-                      />
-                      <path
-                        fill="#FBBC05"
-                        d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"
-                      />
-                      <path
-                        fill="#EA4335"
-                        d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
-                      />
-                    </svg>
-                    <span className="font-myanmar">
-                      {language === 'my' ? 'Google (Gmail) ဖြင့် ဝင်ရောက်မည်' : 'Continue with Google'}
-                    </span>
-                  </>
+                    </div>
+                  </div>
                 )}
-              </button>
+
+                <div>
+                  <label className="block text-xs font-bold text-neutral-700 dark:text-neutral-300 mb-1 font-myanmar">
+                    {language === 'my' ? 'အီးမေးလ် (Email):' : 'Email Address:'}
+                  </label>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="name@example.com"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-neutral-50 dark:bg-neutral-800 comfort:bg-[#f2e9d8] border border-neutral-300 dark:border-neutral-700 text-xs text-black dark:text-white focus:outline-hidden focus:ring-2 focus:ring-emerald-500/50 transition font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-neutral-700 dark:text-neutral-300 mb-1 font-myanmar">
+                    {language === 'my' ? 'စကားဝှက် (Password):' : 'Password:'}
+                  </label>
+                  <div className="relative">
+                    <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      minLength={6}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-neutral-50 dark:bg-neutral-800 comfort:bg-[#f2e9d8] border border-neutral-300 dark:border-neutral-700 text-xs text-black dark:text-white focus:outline-hidden focus:ring-2 focus:ring-emerald-500/50 transition font-mono"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 transition cursor-pointer"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={submitting || authLoading}
+                  className="w-full mt-2 py-3 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition shadow-sm cursor-pointer disabled:opacity-50 font-myanmar"
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>{language === 'my' ? 'ဆောင်ရွက်နေပါသည်...' : 'Processing...'}</span>
+                    </>
+                  ) : activeTab === 'signin' ? (
+                    <>
+                      <LogIn className="w-4 h-4" />
+                      <span>{language === 'my' ? 'အကောင့်ဝင်မည်' : 'Sign In'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus className="w-4 h-4" />
+                      <span>{language === 'my' ? 'အကောင့်သစ်ဖန်တီးမည်' : 'Create Account'}</span>
+                    </>
+                  )}
+                </button>
+              </form>
             </div>
           )}
-
-          {/* Supabase Configuration Guide Accordion */}
-          <div className="pt-2 border-t border-border-subtle dark:border-neutral-800 comfort:border-[#ded4c1]">
-            <button
-              type="button"
-              onClick={() => setShowSetupGuide((prev) => !prev)}
-              className="w-full flex items-center justify-between text-xs font-bold text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition py-1 cursor-pointer font-myanmar"
-            >
-              <div className="flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-emerald-600" />
-                <span>{language === 'my' ? 'Supabase တွင် Google Login ချိတ်ဆက်နည်းလမ်းညွှန်' : 'What you need to do on Supabase (Step-by-step)'}</span>
-              </div>
-              {showSetupGuide ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            </button>
-
-            {showSetupGuide && (
-              <div className="mt-3 p-4 rounded-2xl bg-neutral-50 dark:bg-neutral-800/60 comfort:bg-[#f2e9d8]/60 border border-neutral-200 dark:border-neutral-800 comfort:border-[#ded4c1] text-xs space-y-3 font-myanmar text-neutral-700 dark:text-neutral-300">
-                <div className="font-bold text-black dark:text-white text-xs mb-1">
-                  {language === 'my' ? 'Google Login အလုပ်လုပ်ရန် Supabase တွင် လုပ်ဆောင်ရန်များ:' : 'Follow these 3 quick steps in Supabase Dashboard:'}
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-start gap-2">
-                    <span className="w-5 h-5 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">1</span>
-                    <div>
-                      <strong className="text-black dark:text-white">Authentication &gt; Providers &gt; Google:</strong>
-                      <p className="mt-0.5 text-neutral-600 dark:text-neutral-400">
-                        {language === 'my' 
-                          ? 'Supabase Dashboard တွင် "Authentication" &gt; "Providers" &gt; "Google" သို့သွားပြီး "Enable Google provider" ကို ဖွင့်ပါ။'
-                          : 'In your Supabase Dashboard, go to "Authentication" > "Providers" > "Google" and toggle "Enable Google provider".'}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-2">
-                    <span className="w-5 h-5 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">2</span>
-                    <div>
-                      <strong className="text-black dark:text-white">Callback URL in Google Cloud Console:</strong>
-                      <p className="mt-0.5 text-neutral-600 dark:text-neutral-400">
-                        {language === 'my' 
-                          ? 'Google Cloud Console &gt; Credentials ၏ "Authorized redirect URIs" တွင် အောက်ပါ Callback URL ကို ထည့်သွင်းပေးပါ:'
-                          : 'In Google Cloud Console > Credentials, add this Callback URL under "Authorized redirect URIs":'}
-                      </p>
-                      <div className="mt-1.5 flex items-center gap-2 p-2 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 font-mono text-[11px] text-emerald-600 dark:text-emerald-400">
-                        <span className="truncate flex-1">{supabaseCallbackUrl}</span>
-                        <button
-                          type="button"
-                          onClick={handleCopyCallback}
-                          className="px-2 py-1 rounded-md bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 text-neutral-700 dark:text-neutral-300 font-sans text-[10px] font-bold flex items-center gap-1 transition shrink-0 cursor-pointer"
-                        >
-                          {copiedUrl ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
-                          <span>{copiedUrl ? 'Copied' : 'Copy'}</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-2">
-                    <span className="w-5 h-5 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">3</span>
-                    <div>
-                      <strong className="text-black dark:text-white">Client ID &amp; Secret:</strong>
-                      <p className="mt-0.5 text-neutral-600 dark:text-neutral-400">
-                        {language === 'my' 
-                          ? 'Google Cloud မှ ရရှိသော "Client ID" နှင့် "Client Secret" ကို Supabase Google Provider ထဲသို့ ထည့်ပြီး "Save" နှိပ်ပါ။'
-                          : 'Paste your Client ID and Client Secret from Google Cloud into the Supabase Google Provider settings and click "Save".'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
         </div>
 
         {/* Footer */}
         <div className="p-4 bg-neutral-50 dark:bg-neutral-950 comfort:bg-[#f2e9d8]/50 border-t border-border-subtle dark:border-neutral-800 comfort:border-[#ded4c1] flex items-center justify-between text-xs text-neutral-500">
           <div className="flex items-center gap-1.5 font-myanmar">
             <ShieldCheck className="w-4 h-4 text-emerald-500" />
-            <span>{language === 'my' ? 'လုံခြုံသော Supabase OAuth ၂၅၆-ဘစ် စနစ်' : 'Secure Supabase OAuth 2.0'}</span>
+            <span>{language === 'my' ? 'လုံခြုံသော Supabase Auth စနစ်' : 'Secure Supabase Auth'}</span>
           </div>
 
           <button

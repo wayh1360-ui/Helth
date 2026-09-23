@@ -4,7 +4,8 @@ import { MedicinalPlants } from './components/MedicinalPlants';
 import { SymptomsFirstAid } from './components/SymptomsFirstAid';
 import { EmergencyHotlines } from './components/EmergencyHotlines';
 import { AssistantSection } from './components/AssistantSection';
-import { SeniorHealthHub } from './components/SeniorHealthHub';
+
+import { SymptomsRemedies } from './components/SymptomsRemedies';
 import { Footer } from './components/Footer';
 import { HerbMonographModal } from './components/HerbMonographModal';
 import { HerbCatalogModal } from './components/HerbCatalogModal';
@@ -59,7 +60,7 @@ export default function App() {
 
   // Admin section subtab selection for direct navigation
   const [adminInitialTab, setAdminInitialTab] = useState<'post' | 'sections'>('post');
-  const [adminSectionSubTab, setAdminSectionSubTab] = useState<'plants' | 'senior' | 'firstaid' | 'hotlines'>('plants');
+  const [adminSectionSubTab, setAdminSectionSubTab] = useState<'plants' | 'symptoms' | 'firstaid' | 'hotlines'>('plants');
   const [assistantInitialPrompt, setAssistantInitialPrompt] = useState<string | undefined>(undefined);
 
   // Dynamic managed datasets
@@ -136,7 +137,7 @@ export default function App() {
       q.includes('အဆစ်') || 
       q.includes('အိပ်မပျော်')
     ) {
-      setActiveSection('senior');
+      setActiveSection('symptoms');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -204,7 +205,7 @@ export default function App() {
   };
 
   // Quick navigation directly to specific admin section
-  const handleOpenAdminSection = (section: 'plants' | 'senior' | 'firstaid' | 'hotlines') => {
+  const handleOpenAdminSection = (section: 'plants' | 'symptoms' | 'firstaid' | 'hotlines') => {
     setAdminInitialTab('sections');
     setAdminSectionSubTab(section);
     setActiveSection('admin');
@@ -239,23 +240,16 @@ export default function App() {
           </div>
         )}
 
-        {/* VIEW 2: 40+ Senior Health & Vitality Hub (Special 40+ Doctor Recommendations) */}
-        {activeSection === 'senior' && (
+
+
+        {/* VIEW 3: Symptoms & Home Remedies (ရောဂါလက္ခဏာများ နှင့် အိမ်တွင်းဆေးနည်းများ) */}
+        {activeSection === 'remedies' && (
           <div className="animate-in fade-in duration-200">
-            <SeniorHealthHub
+            <SymptomsRemedies
               language={language}
-              onOpenHerb={(herbId: string) => {
-                const found = currentHerbs.find((h) => h.id === herbId);
-                if (found) {
-                  setSelectedHerb(found);
-                } else {
-                  handleSelectHerbByName(herbId);
-                }
-              }}
-              onOpenAssistantWithPrompt={(prompt: string) => {
+              onConsultAdvisor={(prompt: string) => {
                 handleConsultAssistant(prompt);
               }}
-              onManageSection={() => handleOpenAdminSection('senior')}
             />
           </div>
         )}

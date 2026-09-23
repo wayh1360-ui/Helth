@@ -897,7 +897,7 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
             {/* Gemini Brand & Model Selector */}
             <div className="flex items-center gap-2">
               <span className="text-base sm:text-lg font-bold text-neutral-900 dark:text-neutral-100 tracking-tight font-myanmar">
-                {chatLanguage === 'my' ? 'Doctor AI' : 'Doctor AI'}
+                {chatLanguage === 'my' ? 'အိမ်တွင်းကုသမှုအကြံပေး' : 'Home Treatment Advisor'}
               </span>
 
               {/* Minimal Model Badge / Config Trigger */}
@@ -1172,12 +1172,12 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
 
                   {/* Clean Greeting */}
                   <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight leading-tight font-myanmar">
-                    <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 dark:from-blue-400 dark:via-indigo-300 dark:to-purple-400 bg-clip-text text-transparent">
-                      {chatLanguage === 'my' ? 'မင်္ဂလာပါ' : 'Hello, Friend'}
+                    <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 dark:from-emerald-400 dark:via-teal-300 dark:to-emerald-400 bg-clip-text text-transparent font-extrabold">
+                      {chatLanguage === 'my' ? 'အိမ်တွင်းကုသမှုအကြံပေး' : 'Home Treatment Advisor'}
                     </span>
                   </h1>
-                  <p className="text-base sm:text-xl text-neutral-500 dark:text-neutral-400 mt-2 mb-6 font-myanmar font-normal">
-                    {chatLanguage === 'my' ? 'ယနေ့ ကျန်းမာရေးအတွက် ဘာများ ကူညီပေးရမလဲ?' : 'How can Doctor AI help you today?'}
+                  <p className="text-base sm:text-lg text-neutral-500 dark:text-neutral-400 mt-2 mb-6 font-myanmar font-normal">
+                    {chatLanguage === 'my' ? 'ကျန်းမာရေးနှင့် ဆေးဝါးများအကြောင်း မေးမြန်းရန် ရှာဖွေပါ...' : 'Search medicines, symptoms, or ask health questions...'}
                   </p>
 
                   {/* PROMINENT DOCTOR AI SEARCH BAR */}
@@ -1288,7 +1288,7 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
                           placeholder={
                             attachedImage
                               ? (chatLanguage === 'my' ? 'ဤဆေးဝါးအကြောင်း မေးလိုသည်များ ရေးပါ သို့မဟုတ် ရှာဖွေပါ...' : 'Ask about this medicine or press search...')
-                              : (chatLanguage === 'my' ? 'ဆေးဝါးအမည်၊ ရောဂါလက္ခဏာ (သို့) ကျန်းမာရေးပြဿနာ ရှာဖွေ မေးမြန်းပါ...' : 'Search medicines, symptoms, or ask Doctor AI...')
+                              : (chatLanguage === 'my' ? 'ဆေးဝါးအမည်၊ ရောဂါလက္ခဏာ (သို့) ကျန်းမာရေးပြဿနာ ရှာဖွေ မေးမြန်းပါ...' : 'Search medicines, symptoms, or ask Home Treatment Advisor...')
                           }
                           className="flex-1 bg-transparent py-2 sm:py-2.5 text-xs sm:text-base text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 focus:outline-none font-myanmar leading-relaxed"
                           autoFocus
@@ -1346,63 +1346,6 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
                       </div>
                     </div>
 
-                    {/* Quick Search Shortcut Tags */}
-                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-3 text-xs font-myanmar">
-                      <span className="text-[11px] text-neutral-400 dark:text-neutral-500 shrink-0">
-                        {chatLanguage === 'my' ? 'အမြန်ရှာဖွေရန်:' : 'Quick search:'}
-                      </span>
-                      <button
-                        onClick={() => handleSendMessage(chatLanguage === 'my' ? 'သွေးတိုးရောဂါအတွက် သောက်သုံးသင့်သော ဆေးဝါးများနှင့် ဆောင်ရန်ရှောင်ရန်များ' : 'Blood pressure medicines and precautions')}
-                        type="button"
-                        className="px-2.5 py-1 rounded-full bg-neutral-100 dark:bg-neutral-800/80 hover:bg-neutral-200/80 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer border border-neutral-200/60 dark:border-neutral-700/60"
-                      >
-                        💊 {chatLanguage === 'my' ? 'သွေးတိုးကျဆေး' : 'Blood Pressure'}
-                      </button>
-                      <button
-                        onClick={() => handleSendMessage(chatLanguage === 'my' ? 'ဆီးချိုရောဂါ သတိထားရမည့် လက္ခဏာများနှင့် အစားအသောက်' : 'Diabetes warning signs & diet')}
-                        type="button"
-                        className="px-2.5 py-1 rounded-full bg-neutral-100 dark:bg-neutral-800/80 hover:bg-neutral-200/80 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer border border-neutral-200/60 dark:border-neutral-700/60"
-                      >
-                        🩺 {chatLanguage === 'my' ? 'ဆီးချိုရောဂါ' : 'Diabetes'}
-                      </button>
-                      <button
-                        onClick={() => handleSendMessage(chatLanguage === 'my' ? 'ဒူးဆစ်နာကျင်ခြင်းအတွက် သက်သာစေမည့် တိုင်းရင်းဆေးနည်းများ' : 'Knee joint pain relief remedies')}
-                        type="button"
-                        className="px-2.5 py-1 rounded-full bg-neutral-100 dark:bg-neutral-800/80 hover:bg-neutral-200/80 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer border border-neutral-200/60 dark:border-neutral-700/60"
-                      >
-                        🦵 {chatLanguage === 'my' ? 'ဒူးဆစ်နာကျင်ခြင်း' : 'Joint Pain'}
-                      </button>
-                      <button
-                        onClick={() => handleSendMessage(chatLanguage === 'my' ? 'နှလုံးရုတ်တရက်ဖောက်ခြင်း အရေးပေါ်ရှေးဦးပြုစုနည်း' : 'Heart attack emergency first aid')}
-                        type="button"
-                        className="px-2.5 py-1 rounded-full bg-neutral-100 dark:bg-neutral-800/80 hover:bg-neutral-200/80 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer border border-neutral-200/60 dark:border-neutral-700/60"
-                      >
-                        🚨 {chatLanguage === 'my' ? 'အရေးပေါ် ရှေးဦးပြုစုနည်း' : 'First Aid'}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* 4 Clean Gemini Suggestion Cards */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full text-left">
-                    {bentoCards.map((card, idx) => (
-                      <div
-                        key={idx}
-                        onClick={card.action}
-                        className="group p-4 rounded-2xl bg-neutral-100/70 hover:bg-neutral-100 dark:bg-neutral-800/60 dark:hover:bg-neutral-800 transition-all cursor-pointer flex flex-col justify-between min-h-[105px]"
-                      >
-                        <p className="text-xs sm:text-sm font-medium text-neutral-800 dark:text-neutral-200 font-myanmar leading-snug line-clamp-2">
-                          {card.title}
-                        </p>
-                        <div className="mt-3 flex items-center justify-between">
-                          <span className="text-[11px] text-neutral-400 font-myanmar">
-                            {card.badge}
-                          </span>
-                          <div className="w-7 h-7 rounded-full bg-white dark:bg-neutral-700/80 flex items-center justify-center text-neutral-600 dark:text-neutral-300 shadow-2xs group-hover:scale-105 transition-transform">
-                            {card.icon}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
                   </div>
 
                   {/* Saved Consultations Chips (Mapped from history prop) */}
@@ -1800,11 +1743,11 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
                   </button>
                 </div>
 
-                {/* Gemini Disclaimer Caption */}
+                {/* Disclaimer Caption */}
                 <p className="text-[10px] text-center text-neutral-400 dark:text-neutral-500 mt-2 font-myanmar">
                   {chatLanguage === 'my'
-                    ? 'Doctor AI သည် ကျန်းမာရေး အသိပညာပေး လက်ထောက်ဖြစ်ပြီး ဆရာဝန်၏ တိုက်ရိုက်ကုသမှုကို အစားမထိုးပါ။ အရေးပေါ်အခြေအနေတွင် ၁၉၂ သို့ ခေါ်ဆိုပါ။'
-                    : 'Doctor AI provides health reference information and does not replace professional medical diagnosis. Call Emergency 192 for urgent life safety.'}
+                    ? 'အိမ်တွင်းကုသမှုအကြံပေး သည် ကျန်းမာရေး အသိပညာပေး လက်ထောက်ဖြစ်ပြီး ဆရာဝန်၏ တိုက်ရိုက်ကုသမှုကို အစားမထိုးပါ။ အရေးပေါ်အခြေအနေတွင် ၁၉၂ သို့ ခေါ်ဆိုပါ။'
+                    : 'Home Treatment Advisor provides health reference information and does not replace professional medical diagnosis. Call Emergency 192 for urgent life safety.'}
                 </p>
               </div>
             </div>

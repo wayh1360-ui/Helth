@@ -247,7 +247,7 @@ export const DynamicPostsFeed: React.FC<DynamicPostsFeedProps> = ({ language, on
 
         {/* Action Controls */}
         <div className="flex flex-wrap items-center gap-2.5 shrink-0 w-full sm:w-auto">
-          {/* Supabase Google OAuth Login & Profile Indicator */}
+          {/* Supabase Email/Password Auth Login & Profile Indicator */}
           <LoginButton language={language} />
 
           <button

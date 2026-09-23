@@ -51,7 +51,7 @@ export const PolarityBanner: React.FC<PolarityBannerProps> = ({
             id="polarity-open-ai"
           >
             <Bot className="w-4 h-4 text-purple-300" />
-            <span>{language === 'my' ? 'AI ဆရာဝန်နှင့် ဆွေးနွေးမည်' : 'Consult AI Doctor'}</span>
+            <span>{language === 'my' ? 'အိမ်တွင်းကုသမှုအကြံပေး မေးမည်' : 'Consult Treatment Advisor'}</span>
           </button>
         </div>
       </div>

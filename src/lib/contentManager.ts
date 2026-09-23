@@ -1,8 +1,9 @@
-import { Herb, EmergencyProtocol, EmergencyHotline, SeniorHealthTopic } from '../types';
+import { Herb, EmergencyProtocol, EmergencyHotline, SeniorHealthTopic, CustomSymptomRemedy } from '../types';
 import { HERBS_DATA } from '../data/herbs';
 import { PROTOCOLS_DATA } from '../data/protocols';
 import { HOTLINES_DATA } from '../data/hotlines';
 import { SENIOR_HEALTH_DATA } from '../data/seniorHealth';
+import { DEFAULT_SYMPTOMS } from '../data/symptoms';
 
 // Storage keys
 const STORAGE_KEYS = {
@@ -10,6 +11,7 @@ const STORAGE_KEYS = {
   PROTOCOLS: 'tmhip_custom_protocols',
   HOTLINES: 'tmhip_custom_hotlines',
   SENIOR: 'tmhip_custom_senior',
+  SYMPTOMS: 'tmhip_custom_symptom_remedies',
 };
 
 // --- HERBS (Medicinal Plants) ---
@@ -144,4 +146,32 @@ export function resetSeniorTopicsToDefault(): SeniorHealthTopic[] {
     window.dispatchEvent(new Event('tmhip_content_updated'));
   }
   return SENIOR_HEALTH_DATA;
+}
+
+// --- SYMPTOMS & HOME REMEDIES ---
+export function getManagedSymptoms(): CustomSymptomRemedy[] {
+  if (typeof window === 'undefined') return DEFAULT_SYMPTOMS;
+  try {
+    const saved = localStorage.getItem(STORAGE_KEYS.SYMPTOMS);
+    if (!saved) return DEFAULT_SYMPTOMS;
+    const parsed = JSON.parse(saved);
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_SYMPTOMS;
+  } catch (e) {
+    console.error('Failed to parse managed symptoms:', e);
+    return DEFAULT_SYMPTOMS;
+  }
+}
+
+export function saveManagedSymptoms(symptoms: CustomSymptomRemedy[]): void {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(STORAGE_KEYS.SYMPTOMS, JSON.stringify(symptoms));
+  window.dispatchEvent(new Event('tmhip_content_updated'));
+}
+
+export function resetSymptomsToDefault(): CustomSymptomRemedy[] {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem(STORAGE_KEYS.SYMPTOMS);
+    window.dispatchEvent(new Event('tmhip_content_updated'));
+  }
+  return DEFAULT_SYMPTOMS;
 }

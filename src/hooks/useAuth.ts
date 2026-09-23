@@ -22,6 +22,8 @@ export interface UseAuthReturn {
   userName: string | null;
   userAvatar: string | null;
   userInfo: AuthUserInfo | null;
+  signInWithPassword: (email: string, password: string) => Promise<{ error: string | null }>;
+  signUpWithPassword: (email: string, password: string, fullName?: string) => Promise<{ error: string | null }>;
   signInWithGoogle: () => Promise<{ error: string | null }>;
   signOut: () => Promise<{ error: string | null }>;
   refreshSession: () => Promise<void>;
@@ -164,6 +166,56 @@ export function useAuth(): UseAuthReturn {
   }, [refreshSession]);
 
   /**
+   * Sign in with Email and Password
+   */
+  const signInWithPassword = useCallback(async (email: string, password: string): Promise<{ error: string | null }> => {
+    setError(null);
+    try {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (signInError) {
+        setError(signInError.message);
+        return { error: signInError.message };
+      }
+      return { error: null };
+    } catch (err: any) {
+      const msg = err?.message || 'Sign in failed';
+      setError(msg);
+      return { error: msg };
+    }
+  }, []);
+
+  /**
+   * Sign up with Email, Password and Full Name
+   */
+  const signUpWithPassword = useCallback(async (email: string, password: string, fullName?: string): Promise<{ error: string | null }> => {
+    setError(null);
+    try {
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName || email.split('@')[0],
+            name: fullName || email.split('@')[0],
+          }
+        }
+      });
+      if (signUpError) {
+        setError(signUpError.message);
+        return { error: signUpError.message };
+      }
+      return { error: null };
+    } catch (err: any) {
+      const msg = err?.message || 'Sign up failed';
+      setError(msg);
+      return { error: msg };
+    }
+  }, []);
+
+  /**
    * Trigger Google OAuth via Supabase: auth.signInWithOAuth({ provider: 'google' })
    */
   const signInWithGoogle = useCallback(async (): Promise<{ error: string | null }> => {
@@ -174,10 +226,6 @@ export function useAuth(): UseAuthReturn {
         provider: 'google',
         options: {
           redirectTo: redirectUrl,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
         },
       });
 
@@ -234,6 +282,8 @@ export function useAuth(): UseAuthReturn {
     userName: userInfo?.name || null,
     userAvatar: userInfo?.avatarUrl || null,
     userInfo,
+    signInWithPassword,
+    signUpWithPassword,
     signInWithGoogle,
     signOut,
     refreshSession,
