@@ -14,6 +14,8 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { ChatMessage } from '../types';
+import { TTSButton } from './common/TTSButton';
+import { speakText, stopTTS } from '../utils/speech';
 
 interface AiAssistantWidgetProps {
   isOpen: boolean;
@@ -41,8 +43,8 @@ export const AiAssistantWidget: React.FC<AiAssistantWidgetProps> = ({
     {
       id: 'welcome-1',
       sender: 'assistant',
-      text: 'Hello! Ask any question regarding certified herbs, remedies, 40+ wellness, or immediate first aid steps in Burmese or English.',
-      myanmarText: 'မင်္ဂလာပါ။ တိုင်းရင်းဆေးဖက်ဝင် အပင်များ၊ ဆေးနည်းများ၊ သွေးတိုး/ဆီးချို/ဒူးနာနှင့် အရေးပေါ် ရှေးဦးသူနာပြုစုနည်းများကို မေးမြန်းနိုင်ပါသည်။',
+      text: 'Hello! I am HealthGuard, your dedicated health and wellness assistant. How can I help you with your health concerns or home remedies today?',
+      myanmarText: 'မင်္ဂလာပါ။ ကျွန်ုပ်သည် HealthGuard ကျန်းမာရေးနှင့် သုခဆိုင်ရာ အကြံပေး AI ဖြစ်ပါသည်။ ယနေ့ သင်၏ ကျန်းမာရေးဆိုင်ရာ သိလိုသည်များကို မေးမြန်းနိုင်ပါသည်ခင်ဗျာ။',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -60,20 +62,17 @@ export const AiAssistantWidget: React.FC<AiAssistantWidgetProps> = ({
   }, [isOpen, messages]);
 
   const handleSpeak = (text: string, id: string) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
     if (speakingId === id) {
-      window.speechSynthesis.cancel();
+      stopTTS();
       setSpeakingId(null);
       return;
     }
-    window.speechSynthesis.cancel();
-    const clean = text.replace(/[*#_`]/g, '');
-    const utter = new SpeechSynthesisUtterance(clean);
-    utter.rate = 0.9;
-    utter.onend = () => setSpeakingId(null);
-    utter.onerror = () => setSpeakingId(null);
+    stopTTS();
     setSpeakingId(id);
-    window.speechSynthesis.speak(utter);
+    speakText(text, chatLanguage, {
+      onEnd: () => setSpeakingId(null),
+      onError: () => setSpeakingId(null),
+    });
   };
 
   useEffect(() => {

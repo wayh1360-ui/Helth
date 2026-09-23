@@ -21,7 +21,8 @@ import {
   Newspaper,
   UploadCloud,
   FileText,
-  Thermometer
+  Thermometer,
+  Leaf
 } from 'lucide-react';
 import { ActiveSection, ThemeMode, FontSize } from '../types';
 import { LoginButton } from './LoginButton';
@@ -182,31 +183,28 @@ export const Navbar: React.FC<NavbarProps> = ({
       <header className="sticky top-0 z-40 w-full bg-white/95 dark:bg-neutral-950/95 comfort:bg-[#faf6ee]/95 backdrop-blur-md border-b border-border-subtle dark:border-neutral-800 comfort:border-[#ded4c1] transition-colors">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
           
-          {/* Left: Brand Identity */}
+          {/* Left: Brand Identity (SHOW CARE MYANMAR) */}
           <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={() => {
                 onSelectSection('overview');
                 setMenuOpen(false);
               }}
-              className="flex items-center gap-2.5 text-black dark:text-white comfort:text-[#231f1a] hover:opacity-85 transition-opacity text-left cursor-pointer"
+              className="flex items-center gap-2.5 text-left cursor-pointer group"
               id="tmhip-logo-btn"
               type="button"
             >
-              <span className="w-8 h-8 bg-black dark:bg-white comfort:bg-[#231f1a] text-white dark:text-black comfort:text-[#faf6ee] rounded-xl flex items-center justify-center font-extrabold text-base leading-none tracking-tighter shrink-0 shadow-sm">
-                +
-              </span>
+              <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shadow-md shadow-emerald-500/25 group-hover:scale-105 transition-transform duration-200 shrink-0">
+                <Leaf className="w-5 h-5 text-white animate-pulse" />
+              </div>
               <div className="flex flex-col">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-base sm:text-lg tracking-tight leading-none">
-                    TMHIP
-                  </span>
-                  <span className="px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-800 dark:text-amber-300 comfort:text-amber-900 text-[10px] font-bold border border-amber-500/25 shrink-0 whitespace-nowrap">
-                    40+ Care
+                  <span className="font-black text-base sm:text-lg tracking-tight leading-none bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 dark:from-emerald-400 dark:to-teal-300 bg-clip-text text-transparent animate-pulse">
+                    SHOW CARE MYANMAR
                   </span>
                 </div>
-                <span className="text-[10px] sm:text-[11px] text-neutral-500 dark:text-neutral-400 comfort:text-[#645a4e] font-medium leading-tight font-myanmar hidden xs:block truncate">
-                  {language === 'my' ? 'တိုင်းရင်းဆေးနှင့် သက်ကြီးကျန်းမာရေး' : 'National Health & Senior Care'}
+                <span className="text-[10px] sm:text-[11px] text-emerald-800 dark:text-emerald-300 comfort:text-emerald-900 font-bold leading-tight font-myanmar hidden xs:block truncate">
+                  {language === 'my' ? 'သဘာဝဆေးနှင့် ကျန်းမာရေး လမ်းညွှန်' : 'Health & Home Treatment Guide'}
                 </span>
               </div>
             </button>

@@ -13,7 +13,12 @@ import {
   Check, 
   AlertCircle,
   HelpCircle,
-  Sparkles
+  Sparkles,
+  KeyRound,
+  ShieldCheck,
+  Eye,
+  EyeOff,
+  Settings
 } from 'lucide-react';
 import { Herb, EmergencyProtocol, EmergencyHotline, CustomSymptomRemedy } from '../types';
 import {
@@ -33,19 +38,57 @@ import {
 
 interface SectionManagerProps {
   language: 'en' | 'my';
-  initialTab?: 'plants' | 'symptoms' | 'firstaid' | 'hotlines';
+  initialTab?: 'plants' | 'symptoms' | 'firstaid' | 'hotlines' | 'apikeys';
 }
 
 export const SectionContentManager: React.FC<SectionManagerProps> = ({ 
   language,
   initialTab = 'plants'
 }) => {
-  const [activeTab, setActiveTab] = useState<'plants' | 'symptoms' | 'firstaid' | 'hotlines'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'plants' | 'symptoms' | 'firstaid' | 'hotlines' | 'apikeys'>(initialTab);
   const [successMsg, setSuccessMsg] = useState('');
 
   useEffect(() => {
     setActiveTab(initialTab);
   }, [initialTab]);
+
+  // API Key state for Admin
+  const [adminGeminiKey, setAdminGeminiKey] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('tmhip_custom_gemini_key') || '';
+    }
+    return '';
+  });
+  const [adminOpenRouterKey, setAdminOpenRouterKey] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('tmhip_custom_openrouter_key') || '';
+    }
+    return '';
+  });
+  const [showGeminiKey, setShowGeminiKey] = useState(false);
+  const [showOpenRouterKey, setShowOpenRouterKey] = useState(false);
+
+  const handleSaveApiKeys = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('tmhip_custom_gemini_key', adminGeminiKey.trim());
+      localStorage.setItem('tmhip_custom_openrouter_key', adminOpenRouterKey.trim());
+      window.dispatchEvent(new Event('tmhip_content_updated'));
+    }
+    showNotification(language === 'my' ? 'API Key များကို စနစ်တွင် သိမ်းဆည်းလိုက်ပါပြီ' : 'System API Keys updated successfully!');
+  };
+
+  const handleClearApiKeys = () => {
+    if (!window.confirm(language === 'my' ? 'API Key များကို ပယ်ဖျက်မည်လား?' : 'Clear all system API keys?')) return;
+    setAdminGeminiKey('');
+    setAdminOpenRouterKey('');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('tmhip_custom_gemini_key');
+      localStorage.removeItem('tmhip_custom_openrouter_key');
+      window.dispatchEvent(new Event('tmhip_content_updated'));
+    }
+    showNotification(language === 'my' ? 'API Key များကို ဖျက်သိမ်းလိုက်ပါပြီ' : 'API keys cleared.');
+  };
 
   // Data states
   const [herbs, setHerbs] = useState<Herb[]>(() => getManagedHerbs());
@@ -228,7 +271,7 @@ export const SectionContentManager: React.FC<SectionManagerProps> = ({
       </div>
 
       {/* Tabs for Each Section */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-1.5 rounded-2xl bg-neutral-100 dark:bg-neutral-800/80 comfort:bg-[#f2e9d8] mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 p-1.5 rounded-2xl bg-neutral-100 dark:bg-neutral-800/80 comfort:bg-[#f2e9d8] mb-8">
         <button
           type="button"
           onClick={() => { setActiveTab('plants'); setEditingHerb(null); }}
@@ -279,6 +322,19 @@ export const SectionContentManager: React.FC<SectionManagerProps> = ({
         >
           <Phone className="w-4 h-4 text-sky-500" />
           <span>{language === 'my' ? 'ဖုန်းများ' : 'Hotlines'} ({hotlines.length})</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('apikeys')}
+          className={`py-3 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer col-span-2 sm:col-span-1 ${
+            activeTab === 'apikeys'
+              ? 'bg-white dark:bg-neutral-900 comfort:bg-[#faf6ee] text-black dark:text-white comfort:text-[#231f1a] shadow-sm'
+              : 'text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white'
+          }`}
+        >
+          <KeyRound className="w-4 h-4 text-amber-500" />
+          <span>{language === 'my' ? 'API Key စီမံရန်' : 'API Keys'}</span>
         </button>
       </div>
 
@@ -1175,6 +1231,101 @@ export const SectionContentManager: React.FC<SectionManagerProps> = ({
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* ================= SECTION 5: API KEYS & SYSTEM CONFIG ================= */}
+      {activeTab === 'apikeys' && (
+        <div className="space-y-6">
+          <div className="p-6 rounded-3xl bg-amber-500/10 border border-amber-500/30 space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+                <KeyRound className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-black dark:text-white comfort:text-[#231f1a]">
+                  {language === 'my' ? 'စနစ် Default API Key စီမံခန့်ခွဲမှု' : 'System Default API Key Management'}
+                </h3>
+                <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-0.5">
+                  {language === 'my'
+                    ? 'အသုံးပြုသူများ ဘက်မှ API Key ရိုက်ထည့်ရန် မလိုအပ်ပါ။ Admin မှ ဤနေရာတွင် စနစ်အတွက် API Key ကို သတ်မှတ်ထားရှိနိုင်ပါသည်။'
+                    : 'Users do not need to enter an API key. Admins configure system default API keys here for all AI consultations.'}
+                </p>
+              </div>
+            </div>
+
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/20 text-xs font-bold font-myanmar">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <span>{language === 'my' ? 'အသုံးပြုသူများ အလိုအလျောက် သုံးစွဲနိုင်သော စနစ် API Key ဖွင့်ထားပါသည်' : 'All users automatically use system default API key'}</span>
+            </div>
+          </div>
+
+          <form onSubmit={handleSaveApiKeys} className="p-6 rounded-3xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700/60 space-y-5">
+            <div>
+              <label className="block text-xs font-bold text-neutral-800 dark:text-neutral-200 mb-1 font-myanmar">
+                {language === 'my' ? 'Gemini API Key (Google AI Studio System Key):' : 'Gemini API Key (Google AI Studio System Key):'}
+              </label>
+              <div className="relative">
+                <input
+                  type={showGeminiKey ? 'text' : 'password'}
+                  value={adminGeminiKey}
+                  onChange={(e) => setAdminGeminiKey(e.target.value)}
+                  placeholder="AIzaSy..."
+                  className="w-full pl-4 pr-10 py-2.5 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 text-xs font-mono text-black dark:text-white"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowGeminiKey(!showGeminiKey)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 cursor-pointer"
+                >
+                  {showGeminiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              <p className="text-[11px] text-neutral-500 mt-1">
+                {language === 'my' ? 'Google AI Studio မှ ရရှိသော API Key ကို ထည့်သွင်းပေးပါ။' : 'Enter system Gemini API Key from Google AI Studio.'}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-neutral-800 dark:text-neutral-200 mb-1 font-myanmar">
+                {language === 'my' ? 'OpenRouter API Key (စိတ်ကြိုက် Secondary Provider Key):' : 'OpenRouter API Key (Optional Secondary Provider Key):'}
+              </label>
+              <div className="relative">
+                <input
+                  type={showOpenRouterKey ? 'text' : 'password'}
+                  value={adminOpenRouterKey}
+                  onChange={(e) => setAdminOpenRouterKey(e.target.value)}
+                  placeholder="sk-or-v1-..."
+                  className="w-full pl-4 pr-10 py-2.5 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 text-xs font-mono text-black dark:text-white"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowOpenRouterKey(!showOpenRouterKey)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 cursor-pointer"
+                >
+                  {showOpenRouterKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-2 border-t border-neutral-200 dark:border-neutral-700">
+              <button
+                type="button"
+                onClick={handleClearApiKeys}
+                className="px-4 py-2.5 rounded-2xl bg-red-50 hover:bg-red-100 dark:bg-red-950/40 text-red-600 font-bold text-xs border border-red-200 dark:border-red-900 transition cursor-pointer font-myanmar"
+              >
+                {language === 'my' ? 'Key ဖျက်မည်' : 'Clear Keys'}
+              </button>
+
+              <button
+                type="submit"
+                className="px-6 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 transition shadow-sm cursor-pointer font-myanmar"
+              >
+                <Save className="w-4 h-4" />
+                <span>{language === 'my' ? 'API Key များ သိမ်းဆည်းမည်' : 'Save System API Keys'}</span>
+              </button>
+            </div>
+          </form>
         </div>
       )}
     </div>

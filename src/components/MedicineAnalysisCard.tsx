@@ -14,6 +14,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { MedicineAnalysisResult } from '../types';
+import { speakText, stopTTS } from '../utils/speech';
 
 interface MedicineAnalysisCardProps {
   result: MedicineAnalysisResult;
@@ -41,30 +42,25 @@ export const MedicineAnalysisCard: React.FC<MedicineAnalysisCardProps> = ({
 
   const handleSpeak = (e?: React.MouseEvent) => {
     e?.stopPropagation();
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
 
     if (speaking) {
-      window.speechSynthesis.cancel();
+      stopTTS();
       setSpeaking(false);
       return;
     }
 
-    window.speechSynthesis.cancel();
+    stopTTS();
 
     const isMy = language === 'my';
     const textToSpeak = isMy 
       ? (result.myanmarSummaryForSpeech || `${result.myanmarName || result.medicineName} ဖြစ်ပါသည်။ ${result.myanmarPurpose || result.purpose}။ သောက်သုံးရန်- ${result.myanmarTiming || result.timing}`)
       : (result.summaryForSpeech || `This is ${result.medicineName}. ${result.purpose}. Instructions: ${result.timing}`);
 
-    const utterance = new SpeechSynthesisUtterance(textToSpeak.replace(/[*#_`]/g, ''));
-    utterance.rate = 0.85;
-    utterance.lang = isMy ? 'my-MM' : 'en-US';
-
-    utterance.onend = () => setSpeaking(false);
-    utterance.onerror = () => setSpeaking(false);
-
     setSpeaking(true);
-    window.speechSynthesis.speak(utterance);
+    speakText(textToSpeak, language, {
+      onEnd: () => setSpeaking(false),
+      onError: () => setSpeaking(false),
+    });
   };
 
   const handlePrint = (e?: React.MouseEvent) => {

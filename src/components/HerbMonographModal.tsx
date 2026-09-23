@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, CheckCircle2, AlertTriangle, ShieldCheck, Volume2, VolumeX, Globe } from 'lucide-react';
 import { Herb } from '../types';
 import { getLocalizedHerbMonograph } from '../lib/myanmarHerbHelper';
+import { speakText, stopTTS } from '../utils/speech';
 
 interface HerbMonographModalProps {
   herb: Herb | null;
@@ -53,27 +54,22 @@ export const HerbMonographModal: React.FC<HerbMonographModalProps> = ({
 
   // Audio Speech synthesis toggle
   const toggleSpeech = () => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-
     if (isSpeaking) {
-      window.speechSynthesis.cancel();
+      stopTTS();
       setIsSpeaking(false);
       return;
     }
 
-    window.speechSynthesis.cancel();
+    stopTTS();
     const textToRead = isMyanmar
       ? `${herb.myanmarName}။ ${primaryDescription}။ ပုံမှန်သောက်သုံးရန် - ${dosage}။ ဆေးဖော်စပ်ပုံ - ${preparation}။`
       : `${herb.englishName}, scientifically known as ${herb.scientificName}. ${primaryDescription}. Standard dosage: ${dosage}. Preparation: ${preparation}.`;
 
-    const utterance = new SpeechSynthesisUtterance(textToRead);
-    utterance.lang = isMyanmar ? 'my-MM' : 'en-US';
-    utterance.rate = 0.9;
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-
     setIsSpeaking(true);
-    window.speechSynthesis.speak(utterance);
+    speakText(textToRead, modalLang, {
+      onEnd: () => setIsSpeaking(false),
+      onError: () => setIsSpeaking(false),
+    });
   };
 
   return (

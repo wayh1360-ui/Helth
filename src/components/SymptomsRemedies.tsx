@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { CustomSymptomRemedy } from '../types';
 import { getManagedSymptoms } from '../lib/contentManager';
+import { TTSButton } from './common/TTSButton';
 
 export interface SymptomsRemediesProps {
   language: 'en' | 'my';
@@ -292,7 +293,12 @@ export const SymptomsRemedies: React.FC<SymptomsRemediesProps> = ({
                   </div>
                 </div>
 
-
+                <TTSButton
+                  text={`${language === 'my' ? item.symptomNameMy : item.symptomName}. ${language === 'my' ? item.descriptionMy : item.description}. ${language === 'my' ? 'ကုသရန် အိမ်တွင်းဆေးနည်းများ:' : 'Home remedies:'} ${(language === 'my' ? item.remediesMy : item.remedies).join('. ')}`}
+                  language={language}
+                  size="sm"
+                  variant="subtle"
+                />
               </div>
 
               {/* Description */}
