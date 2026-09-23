@@ -28,6 +28,34 @@ function getGeminiClient(): GoogleGenAI | null {
   return geminiClient;
 }
 
+function cleanTextResponse(text: string): string {
+  if (!text) return '';
+  return text
+    .replace(/\*{1,3}/g, '')
+    .replace(/(\n\s*)[•\-\*]\s+/g, '$1• ')
+    .trim();
+}
+
+// In-memory sliding window rate limiter
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+
+function checkRateLimit(ip: string, maxRequests: number = 10, windowMs: number = 10 * 60 * 1000): { allowed: boolean; remainingMs: number } {
+  const now = Date.now();
+  const record = rateLimitMap.get(ip);
+
+  if (!record || now > record.resetTime) {
+    rateLimitMap.set(ip, { count: 1, resetTime: now + windowMs });
+    return { allowed: true, remainingMs: windowMs };
+  }
+
+  if (record.count >= maxRequests) {
+    return { allowed: false, remainingMs: record.resetTime - now };
+  }
+
+  record.count += 1;
+  return { allowed: true, remainingMs: record.resetTime - now };
+}
+
 // Resilient Gemini model cascade: handles temporary 503 high-demand spikes
 const GEMINI_MODELS = [
   'gemini-3.8-flash',
@@ -478,6 +506,20 @@ Do not enclose in markdown blocks, return pure JSON.`;
 // Clinical & Herbal AI Assistant endpoint
 app.post('/api/chat', async (req, res) => {
   try {
+    const clientIp = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || '127.0.0.1';
+    const isIpAdmin = req.headers['x-admin-key'] || req.headers['authorization'];
+
+    if (!isIpAdmin) {
+      const { allowed } = checkRateLimit(clientIp, 10, 10 * 60 * 1000); // 10 requests per 10 mins
+      if (!allowed) {
+        res.status(429).json({
+          response: 'ဆွေးနွေးမေးမြန်းနိုင်သည့် အကြိမ်အရေအတွက် ခေတ္တပြည့်သွားပါပြီ။ ကျေးဇူးပြု၍ မိနစ်အနည်းငယ် ကြာမှ ပြန်လည် မေးမြန်းပေးပါရန် (Rate Limit Exceeded. Please wait a few minutes before trying again.)',
+          error: 'rate_limit_exceeded'
+        });
+        return;
+      }
+    }
+
     const { message, image, language = 'en', openRouterApiKey, model } = req.body;
 
     if ((!message || typeof message !== 'string') && !image) {
@@ -492,7 +534,7 @@ app.post('/api/chat', async (req, res) => {
     const hasMyanmarCharacters = /[\u1000-\u109F]/.test(effectiveMessage);
     const shouldReplyInMyanmar = language === 'my' || hasMyanmarCharacters;
 
-    const systemInstruction = `You are "HealthGuard", an expert, empathetic, and highly safety-conscious AI Health & Wellness Agent embedded in the SHOW CARE MYANMAR health platform.
+    const systemInstruction = `You are "အိမ်တွင်းကုသရေး အကြံပေး" (Home Health & Wellness Advisor), an expert, empathetic, and highly safety-conscious AI Health Agent embedded in the SHOW CARE MYANMAR platform.
 
 # PRIMARY OBJECTIVE
 Your core mission is to help users understand their health concerns, provide accurate, evidence-based wellness and Myanmar traditional herbal guidance, and help them determine when to seek professional medical care.
@@ -511,63 +553,75 @@ Your core mission is to help users understand their health concerns, provide acc
 - EMERGENCY ESCALATION: If red-flag symptoms are present (e.g., severe chest pain, shortness of breath, sudden numbness, severe bleeding, snakebite, unconsciousness), immediately instruct the user to call emergency services (Ambulance 192 / Fire & Rescue 191).
 - STRICT SCOPE LOCK: You ONLY answer health, medical, wellness, nutrition, fitness, traditional herbal remedies, and first aid queries. If a user asks about non-health topics (e.g., programming, coding, math, general trivia, history), politely refuse using this exact message:
   ${shouldReplyInMyanmar 
-    ? `"ကျွန်ုပ်သည် HealthGuard ဖြစ်ပြီး သင်၏ ကျန်းမာရေးနှင့် သုခဆိုင်ရာ သီးသန့် ကူညီပေးသူ ဖြစ်ပါသည်။ ကျွန်ုပ်အနေဖြင့် ကျန်းမာရေးဆိုင်ရာ မေးမြန်းမှုများကိုသာ ကူညီ ဖြေကြားပေးနိုင်ပါသည်။ ယနေ့ သင်၏ ကျန်းမာရေးအတွက် မည်သို့ ကူညီပေးရမလဲ ခင်ဗျာ။"` 
-    : `"I am HealthGuard, your dedicated health and wellness assistant. I can only assist with health-related queries. How can I help you with your health today?"`}
+    ? `"ကျွန်ုပ်သည် အိမ်တွင်းကုသရေး အကြံပေး ဖြစ်ပြီး သင်၏ ကျန်းမာရေးနှင့် သုခဆိုင်ရာ သီးသန့် ကူညီပေးသူ ဖြစ်ပါသည်။ ကျွန်ုပ်အနေဖြင့် ကျန်းမာရေးဆိုင်ရာ မေးမြန်းမှုများကိုသာ ကူညီ ဖြေကြားပေးနိုင်ပါသည်။ ယနေ့ သင်၏ ကျန်းမာရေးအတွက် မည်သို့ ကူညီပေးရမလဲ ခင်ဗျာ။"` 
+    : `"I am your Home Health Advisor. I can only assist with health-related queries. How can I help you with your health today?"`}
 
 # OUTPUT FORMATTING
 - Tone: Empathetic, calm, professional, and clear.
 - Language: ${shouldReplyInMyanmar ? 'You MUST write your entire response fluently and completely in BURMESE script (မြန်မာဘာသာ).' : 'Write your response in clear, professional English.'}
+- Formatting Rule: DO NOT use markdown asterisks (*, **, ***) anywhere in your response. Use plain text and bullet points (•) for list items.
 - Structure:
   - Brief empathetic acknowledgment.
-  - Bullet points for health insights, traditional herbal guidance, or steps.
+  - Bullet points (•) for health insights, traditional herbal guidance, or steps.
   - Clear recommended action (Emergency vs. Doctor Visit vs. Home/Self-Care).
   - Short medical disclaimer.`;
 
     // 1. Try OpenRouter if key is available
     if (effectiveOpenRouterKey) {
-      try {
-        const userContent: any = image ? [
-          { type: 'text', text: effectiveMessage },
-          { type: 'image_url', image_url: { url: image } }
-        ] : effectiveMessage;
+      const openRouterModels = [
+        selectedModel,
+        'google/gemini-2.5-flash',
+        'meta-llama/llama-3.3-70b-instruct',
+        'openai/gpt-4o-mini',
+        'openrouter/auto'
+      ];
+      const uniqueModels = Array.from(new Set(openRouterModels.filter(Boolean)));
 
-        const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${effectiveOpenRouterKey.trim()}`,
-            'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://tmhip-myanmar.app',
-            'X-Title': 'TMHIP Myanmar Health Platform',
-          },
-          body: JSON.stringify({
-            model: selectedModel,
-            messages: [
-              { role: 'system', content: systemInstruction },
-              { role: 'user', content: userContent }
-            ],
-            temperature: 0.3,
-            max_tokens: 1024,
-          }),
-        });
+      for (const modelToTry of uniqueModels) {
+        try {
+          const userContent: any = image ? [
+            { type: 'text', text: effectiveMessage },
+            { type: 'image_url', image_url: { url: image } }
+          ] : effectiveMessage;
 
-        if (orResponse.ok) {
-          const data = await orResponse.json();
-          const content = data.choices?.[0]?.message?.content;
-          if (content) {
-            res.json({
-              response: content,
-              source: 'openrouter',
-              model: selectedModel,
-              language: shouldReplyInMyanmar ? 'my' : 'en'
-            });
-            return;
+          const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${effectiveOpenRouterKey.trim()}`,
+              'Content-Type': 'application/json',
+              'HTTP-Referer': 'https://tmhip-myanmar.app',
+              'X-Title': 'TMHIP Myanmar Health Platform',
+            },
+            body: JSON.stringify({
+              model: modelToTry,
+              messages: [
+                { role: 'system', content: systemInstruction },
+                { role: 'user', content: userContent }
+              ],
+              temperature: 0.3,
+              max_tokens: 1024,
+            }),
+          });
+
+          if (orResponse.ok) {
+            const data = await orResponse.json();
+            const content = data.choices?.[0]?.message?.content;
+            if (content) {
+              res.json({
+                response: cleanTextResponse(content),
+                source: 'openrouter',
+                model: modelToTry,
+                language: shouldReplyInMyanmar ? 'my' : 'en'
+              });
+              return;
+            }
+          } else {
+            const errText = await orResponse.text();
+            console.warn(`OpenRouter model ${modelToTry} status ${orResponse.status}:`, errText);
           }
-        } else {
-          const errText = await orResponse.text();
-          console.warn('OpenRouter API returned non-OK status:', orResponse.status, errText);
+        } catch (orErr) {
+          console.warn(`OpenRouter request for ${modelToTry} failed:`, orErr);
         }
-      } catch (orErr) {
-        console.warn('OpenRouter request failed, trying fallback:', orErr);
       }
     }
 
@@ -612,7 +666,7 @@ Your core mission is to help users understand their health concerns, provide acc
 
         const responseText = result.text || 'No response generated.';
         res.json({
-          response: responseText,
+          response: cleanTextResponse(responseText),
           source: 'gemini',
           modelUsed: result.modelUsed,
           language: shouldReplyInMyanmar ? 'my' : 'en'
@@ -629,33 +683,33 @@ Your core mission is to help users understand their health concerns, provide acc
     let myanmarReply = '';
 
     if (lower.includes('burn') || lower.includes('မီးလောင်')) {
-      reply = `**Critical Burn Protocol:**\n1. **Cool with running tap water** continuously for 20 minutes. Never apply ice.\n2. **Strictly avoid folk pastes**: Never use toothpaste, soy sauce, egg white, or motor grease.\n3. **Sterile Dressing**: Loosely drape with clean plastic cling wrap or sterile gauze.\n4. **Emergency Transfer**: If larger than palm size or on face/hands/joints, proceed immediately to hospital or call 192.`;
-      myanmarReply = `**မီးလောင်ဒဏ်ရာ အရေးပေါ် ရှေးဦးပြုစုနည်း:**\n၁။ **ရေအေးဖြင့် ဆေးကြောပါ**: သန့်ရှင်းသော ရေအေး (သို့) ရေပိုက်ခေါင်းမှ ရေဖြင့် အနည်းဆုံး မိနစ် ၂၀ ဆက်တိုက် လောင်းချအအေးခံပါ။ (ရေခဲလုံးဝမကပ်ရ)\n၂။ **အန္တရာယ်ရှိသော အလေ့အထများ ရှောင်ကြဉ်ပါ**: သွားတိုက်ဆေး၊ ပဲငံပြာရည်၊ ကြက်ဥအကာ၊ မီးသွေးခဲစသည်တို့ လုံးဝမလိမ်းရပါ။ ပိုးဝင်ခြင်းကို ဖြစ်စေပါသည်။\n၃။ **သန့်ရှင်းစွာ အုပ်ထားပါ**: အဝတ်သန့် (သို့) သန့်ရှင်းသော ပလတ်စတစ်စဖြင့် လျော့လျော့ ဖုံးအုပ်ထားပါ။\n၄။ **အရေးပေါ် ဆေးရုံပို့ဆောင်ပါ**: လက်ဝါးထက်ကြီးသော ဒဏ်ရာ၊ မျက်နှာ၊ လည်ပင်း၊ ခြေလက်အဆစ်များ မီးလောင်ပါက လူနာတင်ယာဉ် ၁၉၂ သို့ ချက်ချင်းခေါ်ဆိုပါ။`;
+      reply = `Critical Burn Protocol:\n1. Cool with running tap water continuously for 20 minutes. Never apply ice.\n2. Strictly avoid folk pastes: Never use toothpaste, soy sauce, egg white, or motor grease.\n3. Sterile Dressing: Loosely drape with clean plastic cling wrap or sterile gauze.\n4. Emergency Transfer: If larger than palm size or on face/hands/joints, proceed immediately to hospital or call 192.`;
+      myanmarReply = `မီးလောင်ဒဏ်ရာ အရေးပေါ် ရှေးဦးပြုစုနည်း:\n၁။ ရေအေးဖြင့် ဆေးကြောပါ: သန့်ရှင်းသော ရေအေး (သို့) ရေပိုက်ခေါင်းမှ ရေဖြင့် အနည်းဆုံး မိနစ် ၂၀ ဆက်တိုက် လောင်းချအအေးခံပါ။ (ရေခဲလုံးဝမကပ်ရ)\n၂။ အန္တရာယ်ရှိသော အလေ့အထများ ရှောင်ကြဉ်ပါ: သွားတိုက်ဆေး၊ ပဲငံပြာရည်၊ ကြက်ဥအကာ၊ မီးသွေးခဲစသည်တို့ လုံးဝမလိမ်းရပါ။ ပိုးဝင်ခြင်းကို ဖြစ်စေပါသည်။\n၃။ သန့်ရှင်းစွာ အုပ်ထားပါ: အဝတ်သန့် (သို့) သန့်ရှင်းသော ပလတ်စတစ်စဖြင့် လျော့လျော့ ဖုံးအုပ်ထားပါ။\n၄။ အရေးပေါ် ဆေးရုံပို့ဆောင်ပါ: လက်ဝါးထက်ကြီးသော ဒဏ်ရာ၊ မျက်နှာ၊ လည်ပင်း၊ ခြေလက်အဆစ်များ မီးလောင်ပါက လူနာတင်ယာဉ် ၁၉၂ သို့ ချက်ချင်းခေါ်ဆိုပါ။`;
     } else if (lower.includes('snake') || lower.includes('မြွေ')) {
-      reply = `**Snakebite Emergency Life Safety Protocol:**\n1. **Complete Immobilization**: Keep victim calm and still. Splint the bitten limb; do NOT allow patient to walk.\n2. **Position Below Heart**: Keep the bite site lower than the heart level.\n3. **NO Incision / NO Tourniquets**: Never cut, suck venom, or apply tight tourniquets which cause limb gangrene.\n4. **Rapid Transport**: Rush directly to township hospital with antivenom stock or call 192 immediately.`;
-      myanmarReply = `**မြွေကိုက်ခံရပါက အရေးပေါ် အသက်ကယ်နည်းလမ်းများ:**\n၁။ **လူနာအား ငြိမ်သက်စွာထားပါ**: လူနာကို မပြေးမလွှားခိုင်းဘဲ လှုပ်ရှားမှုအနည်းဆုံးထားပါ။ ကိုက်ခံရသော ခြေ/လက်ကို သစ်သားချောင်းဖြင့် ကျောက်ပတ်တီးသဖွယ် ငြိမ်အောင် စည်းထားပါ။\n၂။ **နှလုံးထက်နိမ့်သောနေရာတွင် ထားပါ**: အဆိပ်ပျံ့နှံ့မှု နှေးကွေးစေရန် ကိုက်ခံရသည့် နေရာကို နှလုံးထက် နိမ့်အောင်ထားပါ။\n၃။ **လုံးဝ (မပြုလုပ်ရမည့်အရာများ)**: ဓားဖြင့်မခွဲရ၊ ပါးစပ်ဖြင့် မစုပ်ရ၊ ကြိုးဖြင့် သွေးကြောပိတ်အောင် တင်းတင်းကျပ်ကျပ် မချည်ရ (ကြွက်သားပုပ်သွားစေနိုင်ပါသည်)။\n၄။ **ဆေးရုံသို့ အမြန်ပို့ပါ**: မြွေဆိပ်ဖြေဆေး (Antivenom) အဆင်သင့်ရှိသော အနီးဆုံး ဆေးရုံ/ဆေးခန်းသို့ ချက်ချင်း ပို့ဆောင်ပါ (အရေးပေါ် ၁၉၂ သို့ ခေါ်ဆိုပါ)။`;
+      reply = `Snakebite Emergency Life Safety Protocol:\n1. Complete Immobilization: Keep victim calm and still. Splint the bitten limb; do NOT allow patient to walk.\n2. Position Below Heart: Keep the bite site lower than the heart level.\n3. NO Incision / NO Tourniquets: Never cut, suck venom, or apply tight tourniquets which cause limb gangrene.\n4. Rapid Transport: Rush directly to township hospital with antivenom stock or call 192 immediately.`;
+      myanmarReply = `မြွေကိုက်ခံရပါက အရေးပေါ် အသက်ကယ်နည်းလမ်းများ:\n၁။ လူနာအား ငြိမ်သက်စွာထားပါ: လူနာကို မပြေးမလွှားခိုင်းဘဲ လှုပ်ရှားမှုအနည်းဆုံးထားပါ။ ကိုက်ခံရသော ခြေ/လက်ကို သစ်သားချောင်းဖြင့် ကျောက်ပတ်တီးသဖွယ် ငြိမ်အောင် စည်းထားပါ။\n၂။ နှလုံးထက်နိမ့်သောနေရာတွင် ထားပါ: အဆိပ်ပျံ့နှံ့မှု နှေးကွေးစေရန် ကိုက်ခံရသည့် နေရာကို နှလုံးထက် နိမ့်အောင်ထားပါ။\n၃။ လုံးဝ (မပြုလုပ်ရမည့်အရာများ): ဓားဖြင့်မခွဲရ၊ ပါးစပ်ဖြင့် မစုပ်ရ၊ ကြိုးဖြင့် သွေးကြောပိတ်အောင် တင်းတင်းကျပ်ကျပ် မချည်ရ (ကြွက်သားပုပ်သွားစေနိုင်ပါသည်)။\n၄။ ဆေးရုံသို့ အမြန်ပို့ပါ: မြွေဆိပ်ဖြေဆေး (Antivenom) အဆင်သင့်ရှိသော အနီးဆုံး ဆေးရုံ/ဆေးခန်းသို့ ချက်ချင်း ပို့ဆောင်ပါ (အရေးပေါ် ၁၉၂ သို့ ခေါ်ဆိုပါ)။`;
     } else if (lower.includes('cough') || lower.includes('ချောင်းဆိုး') || lower.includes('basil') || lower.includes('tulsi') || lower.includes('ပင်စိမ်း')) {
-      reply = `**Herbal Relief for Cough & Bronchospasm:**\n- **Ocimum tenuiflorum (ပင်စိမ်း / Holy Basil)**: Fresh leaf tea infusion with wild honey taken twice daily relieves persistent dry coughs and relaxes bronchial muscles.\n- **Zingiber officinale (ချင်း / Ginger)**: Boiled ginger root tea with lime and honey expels stubborn respiratory phlegm.\n- **Warning**: If accompanied by high fever, hemoptysis (coughing blood), or shortness of breath, consult a medical doctor.`;
-      myanmarReply = `**ချောင်းဆိုး၊ ရင်ကျပ်နှင့် လေပြွန်ရောင်ရမ်းခြင်း သက်သာစေရန် တိုင်းရင်းဆေးနည်းများ:**\n- **ပင်စိမ်းရွက် (Holy Basil / Ocimum tenuiflorum)**: ပင်စိမ်းရွက် ၇-၁၀ ရွက်ကို ရေနွေးဖျောပြီး ပျားရည်စစ်စစ် အနည်းငယ်ထည့်၍ နံနက်/ည တစ်နေ့ ၂ ကြိမ် သောက်သုံးပါက ချောင်းခြောက်ဆိုးခြင်းနှင့် ရင်ကျပ်ခြင်းကို သက်သာစေပါသည်။\n- **ချင်းပြုတ်ရည် (Ginger Tea)**: ချင်းလက်တစ်ဆစ်ခန့်ကို ပါးပါးလှီး ရေနွေးဆူဆူတွင် ၅ မိနစ်ခန့် ပြုတ်ပြီး သံပရာရည်၊ ပျားရည်တို့ဖြင့် ရောသောက်ပါက ချွဲသလိပ်များကို ကင်းစင်စေပါသည်။\n- **သတိပြုရန်**: သလိပ်ထဲ သွေးပါခြင်း၊ အသက်ရှူကျပ်ခြင်း၊ ၃ ရက်ထက်ပို၍ ဖျားခြင်းတို့ ဖြစ်ပါက ဆရာဝန်နှင့် ပြသတိုင်ပင်ပါ။`;
+      reply = `Herbal Relief for Cough & Bronchospasm:\n• Ocimum tenuiflorum (ပင်စိမ်း / Holy Basil): Fresh leaf tea infusion with wild honey taken twice daily relieves persistent dry coughs and relaxes bronchial muscles.\n• Zingiber officinale (ချင်း / Ginger): Boiled ginger root tea with lime and honey expels stubborn respiratory phlegm.\n• Warning: If accompanied by high fever, hemoptysis (coughing blood), or shortness of breath, consult a medical doctor.`;
+      myanmarReply = `ချောင်းဆိုး၊ ရင်ကျပ်နှင့် လေပြွန်ရောင်ရမ်းခြင်း သက်သာစေရန် တိုင်းရင်းဆေးနည်းများ:\n• ပင်စိမ်းရွက် (Holy Basil / Ocimum tenuiflorum): ပင်စိမ်းရွက် ၇-၁၀ ရွက်ကို ရေနွေးဖျောပြီး ပျားရည်စစ်စစ် အနည်းငယ်ထည့်၍ နံနက်/ည တစ်နေ့ ၂ ကြိမ် သောက်သုံးပါက ချောင်းခြောက်ဆိုးခြင်းနှင့် ရင်ကျပ်ခြင်းကို သက်သာစေပါသည်။\n• ချင်းပြုတ်ရည် (Ginger Tea): ချင်းလက်တစ်ဆစ်ခန့်ကို ပါးပါးလှီး ရေနွေးဆူဆူတွင် ၅ မိနစ်ခန့် ပြုတ်ပြီး သံပရာရည်၊ ပျားရည်တို့ဖြင့် ရောသောက်ပါက ချွဲသလိပ်များကို ကင်းစင်စေပါသည်။\n• သတိပြုရန်: သလိပ်ထဲ သွေးပါခြင်း၊ အသက်ရှူကျပ်ခြင်း၊ ၃ ရက်ထက်ပို၍ ဖျားခြင်းတို့ ဖြစ်ပါက ဆရာဝန်နှင့် ပြသတိုင်ပင်ပါ။`;
     } else if (lower.includes('digest') || lower.includes('nausea') || lower.includes('အစာမကြေ') || lower.includes('ginger') || lower.includes('ချင်း')) {
-      reply = `**Digestive Relief & Nausea Protocol:**\n- **Zingiber officinale (ချင်း / Ginger Root)**: 5-10g boiled decoction accelerates gastric emptying and alleviates colic, nausea, and motion sickness.\n- **Preparation**: Thinly slice fresh ginger into boiling water for 5 minutes.\n- **Caution**: Avoid large doses in patients with active peptic ulcer bleeding or high-dose anticoagulant therapy.`;
-      myanmarReply = `**အစာမကြေ၊ လေထိုးလေအောင့်နှင့် ပျို့အန်ခြင်းအတွက် တိုင်းရင်းဆေးနည်း:**\n- **ချင်း (Ginger Root)**: ချင်းအစို ၅ ဂရမ်ခန့်ကို ပါးပါးလှီး၍ ရေနွေးကြမ်းကဲ့သို့ သောက်သုံးပါက အစာခြေဖျက်မှုကို မြန်ဆန်စေပြီး လေထိုးလေအောင့်နှင့် ပျို့အန်ခြင်းကို သိသိသာသာ သက်သာစေပါသည်။\n- **ပြုလုပ်နည်း**: သန့်ရှင်းသော ချင်းကို ရေနွေးဆူဆူတွင် ၅ မိနစ်ခန့် စိမ်ထားပြီး နွေးနွေးလေး သောက်ပါ။\n- **သတိပြုရန်**: အစာအိမ်သွေးယိုစီးနေသူများနှင့် သွေးကျဲဆေး အလွန်အကျွံ သောက်နေရသူများ ချင်းကို အလွန်အကျွံ မသောက်သုံးသင့်ပါ။`;
+      reply = `Digestive Relief & Nausea Protocol:\n• Zingiber officinale (ချင်း / Ginger Root): 5-10g boiled decoction accelerates gastric emptying and alleviates colic, nausea, and motion sickness.\n• Preparation: Thinly slice fresh ginger into boiling water for 5 minutes.\n• Caution: Avoid large doses in patients with active peptic ulcer bleeding or high-dose anticoagulant therapy.`;
+      myanmarReply = `အစာမကြေ၊ လေထိုးလေအောင့်နှင့် ပျို့အန်ခြင်းအတွက် တိုင်းရင်းဆေးနည်း:\n• ချင်း (Ginger Root): ချင်းအစို ၅ ဂရမ်ခန့်ကို ပါးပါးလှီး၍ ရေနွေးကြမ်းကဲ့သို့ သောက်သုံးပါက အစာခြေဖျက်မှုကို မြန်ဆန်စေပြီး လေထိုးလေအောင့်နှင့် ပျို့အန်ခြင်းကို သိသိသာသာ သက်သာစေပါသည်။\n• ပြုလုပ်နည်း: သန့်ရှင်းသော ချင်းကို ရေနွေးဆူဆူတွင် ၅ မိနစ်ခန့် စိမ်ထားပြီး နွေးနွေးလေး သောက်ပါ။\n• သတိပြုရန်: အစာအိမ်သွေးယိုစီးနေသူများနှင့် သွေးကျဲဆေး အလွန်အကျွံ သောက်နေရသူများ ချင်းကို အလွန်အကျွံ မသောက်သုံးသင့်ပါ။`;
     } else if (lower.includes('neem') || lower.includes('တမာ') || lower.includes('fever') || lower.includes('အဖျား')) {
-      reply = `**Neem (တမာ / Azadirachta indica) Monograph:**\n- **Clinical Property**: Powerful bitter antipyretic, blood purifier, and topical antiseptic.\n- **Preparation**: Boiled leaf water for soothing dermatological lesions; mild leaf infusion for tropical heat fevers.\n- **Caution**: Contraindicated in infants and early pregnancy.`;
-      myanmarReply = `**တမာပင် (Neem / Azadirachta indica) ဆေးဖက်ဝင် အသုံးချပုံ:**\n- **ဆေးဘက်ဂုဏ်သတ္တိ**: ခါးသက်သော ဂုဏ်ရှိပြီး အပူကို ကျစေခြင်း၊ သွေးသန့်စင်စေခြင်းနှင့် ပိုးမွှားများကို သေစေနိုင်သော သဘာဝပိုးသတ်ဆေး ဖြစ်ပါသည်။\n- **အသုံးပြုပုံ**: တမာရွက်ပြုတ်ရည်ဖြင့် အရေပြားယားယံနာ၊ အဖုအပိမ့်များကို ဆေးကြောနိုင်ပြီး တမာရွက်နုကို ဟင်းခါးချက်သောက်ခြင်းဖြင့် အပူဖျားကို သက်သာစေပါသည်။\n- **သတိပြုရန်**: ကိုယ်ဝန်ဆောင်မိခင်များနှင့် မွေးကင်းစကလေးငယ်များ မသုံးစွဲရပါ။`;
+      reply = `Neem (တမာ / Azadirachta indica) Monograph:\n• Clinical Property: Powerful bitter antipyretic, blood purifier, and topical antiseptic.\n• Preparation: Boiled leaf water for soothing dermatological lesions; mild leaf infusion for tropical heat fevers.\n• Caution: Contraindicated in infants and early pregnancy.`;
+      myanmarReply = `တမာပင် (Neem / Azadirachta indica) ဆေးဖက်ဝင် အသုံးချပုံ:\n• ဆေးဘက်ဂုဏ်သတ္တိ: ခါးသက်သော ဂုဏ်ရှိပြီး အပူကို ကျစေခြင်း၊ သွေးသန့်စင်စေခြင်းနှင့် ပိုးမွှားများကို သေစေနိုင်သော သဘာဝပိုးသတ်ဆေး ဖြစ်ပါသည်။\n• အသုံးပြုပုံ: တမာရွက်ပြုတ်ရည်ဖြင့် အရေပြားယားယံနာ၊ အဖုအပိမ့်များကို ဆေးကြောနိုင်ပြီး တမာရွက်နုကို ဟင်းခါးချက်သောက်ခြင်းဖြင့် အပူဖျားကို သက်သာစေပါသည်။\n• သတိပြုရန်: ကိုယ်ဝန်ဆောင်မိခင်များနှင့် မွေးကင်းစကလေးငယ်များ မသုံးစွဲရပါ။`;
     } else if (lower.includes('turmeric') || lower.includes('နနွင်း')) {
-      reply = `**Curcuma longa (နနွင်း / Turmeric):**\n- **Clinical Indications**: Joint inflammation (osteoarthritis) relief and accelerated wound healing.\n- **Bioavailability Tip**: Combine turmeric with a pinch of black pepper (piperine) to increase curcumin systemic absorption by up to 2000%.\n- **Caution**: Discontinue before scheduled major surgical procedures.`;
-      myanmarReply = `**နနွင်း (Turmeric / Curcuma longa) အသုံးချနည်း:**\n- **ဆေးဖက်ဝင် အကျိုးအာနိသင်**: နနွင်းတွင် ပါဝင်သော Curcumin ဓာတ်သည် အဆစ်အမြစ်ရောင်ရမ်းနာကို သက်သာစေပြီး ဒဏ်ရာအနာကျက်မှုကို မြန်ဆန်စေပါသည်။\n- **စုပ်ယူမှုအားကောင်းစေရန်**: နနွင်းမှုန့်ကို ငရုတ်ကောင်းစေ့ အနည်းငယ်နှင့် တွဲဖက်သုံးဆောင်ပါက ခန္ဓာကိုယ်မှ စုပ်ယူမှုကို အဆ ၂၀၀၀ ထိ ပိုမိုအားကောင်းစေပါသည်။\n- **သတိပြုရန်**: ခွဲစိတ်ကုသမှု မခံယူမီ ၂ ပတ်အတွင်း နနွင်းကို အလွန်အကျွံ သုံးစွဲခြင်းမှ ရှောင်ကြဉ်ပါ။`;
+      reply = `Curcuma longa (နနွင်း / Turmeric):\n• Clinical Indications: Joint inflammation (osteoarthritis) relief and accelerated wound healing.\n• Bioavailability Tip: Combine turmeric with a pinch of black pepper (piperine) to increase curcumin systemic absorption by up to 2000%.\n• Caution: Discontinue before scheduled major surgical procedures.`;
+      myanmarReply = `နနွင်း (Turmeric / Curcuma longa) အသုံးချနည်း:\n• ဆေးဖက်ဝင် အကျိုးအာနိသင်: နနွင်းတွင် ပါဝင်သော Curcumin ဓာတ်သည် အဆစ်အမြစ်ရောင်ရမ်းနာကို သက်သာစေပြီး ဒဏ်ရာအနာကျက်မှုကို မြန်ဆန်စေပါသည်။\n• စုပ်ယူမှုအားကောင်းစေရန်: နနွင်းမှုန့်ကို ငရုတ်ကောင်းစေ့ အနည်းငယ်နှင့် တွဲဖက်သုံးဆောင်ပါက ခန္ဓာကိုယ်မှ စုပ်ယူမှုကို အဆ ၂၀၀၀ ထိ ပိုမိုအားကောင်းစေပါသည်။\n• သတိပြုရန်: ခွဲစိတ်ကုသမှု မခံယူမီ ၂ ပတ်အတွင်း နနွင်းကို အလွန်အကျွံ သုံးစွဲခြင်းမှ ရှောင်ကြဉ်ပါ။`;
     } else {
-      reply = `**TMHIP Clinical Guidance:**\nYou inquired about "${message}".\n- For verified herbal monographs, explore the **Medicinal Plants Directory** (Zingiber officinale, Azadirachta indica, Ocimum tenuiflorum, Curcuma longa).\n- For emergency situations, consult the **First Aid Protocols** or dial **Ambulance 192** directly.\n- Consult accredited healthcare practitioners before starting new herbal regimens.`;
-      myanmarReply = `**တိုင်းရင်းဆေးနှင့် အရေးပေါ်ကျန်းမာရေး လမ်းညွှန်:**\nမေးမြန်းမှု: "${message}"\n- တိုင်းရင်းဆေးကျမ်းကဏ္ဍတွင် အသိအမှတ်ပြု ဆေးဖက်ဝင်အပင် ၁၂၀ ကျော်၏ ဆေးညွှန်း၊ သောက်သုံးပုံနှင့် သတိပြုရန်များကို ရှာဖွေဖတ်ရှုနိုင်ပါသည်။\n- အရေးပေါ် ရှေးဦးသူနာပြုစုနည်းများအတွက် ရှေးဦးသူနာပြုလမ်းညွှန်ကို ဖတ်ရှုပါ (သို့) လူနာတင်ယာဉ် ၁၉၂ သို့ ချက်ချင်း ခေါ်ဆိုပါ။\n- တိုင်းရင်းဆေးကုထုံး မစတင်မီ အသိအမှတ်ပြု တိုင်းရင်းဆေးဆရာများနှင့် ပြသတိုင်ပင်ပါ။`;
+      reply = `Home Health Guidance:\nYou inquired about "${message}".\n• For verified herbal monographs, explore the Medicinal Plants Directory (Zingiber officinale, Azadirachta indica, Ocimum tenuiflorum, Curcuma longa).\n• For emergency situations, consult the First Aid Protocols or dial Ambulance 192 directly.\n• Consult accredited healthcare practitioners before starting new herbal regimens.`;
+      myanmarReply = `အိမ်တွင်းကုသရေး အကြံပေး လမ်းညွှန်:\nမေးမြန်းမှု: "${message}"\n• တိုင်းရင်းဆေးကျမ်းကဏ္ဍတွင် အသိအမှတ်ပြု ဆေးဖက်ဝင်အပင် ၁၂၀ ကျော်၏ ဆေးညွှန်း၊ သောက်သုံးပုံနှင့် သတိပြုရန်များကို ရှာဖွေဖတ်ရှုနိုင်ပါသည်။\n• အရေးပေါ် ရှေးဦးသူနာပြုစုနည်းများအတွက် ရှေးဦးသူနာပြုလမ်းညွှန်ကို ဖတ်ရှုပါ (သို့) လူနာတင်ယာဉ် ၁၉၂ သို့ ချက်ချင်း ခေါ်ဆိုပါ။\n• တိုင်းရင်းဆေးကုထုံး မစတင်မီ အသိအမှတ်ပြု တိုင်းရင်းဆေးဆရာများနှင့် ပြသတိုင်ပင်ပါ။`;
     }
 
     const finalAnswer = shouldReplyInMyanmar ? (myanmarReply || reply) : reply;
 
     res.json({
-      response: finalAnswer,
-      myanmarResponse: myanmarReply,
+      response: cleanTextResponse(finalAnswer),
+      myanmarResponse: cleanTextResponse(myanmarReply),
       source: 'clinical-rules',
       language: shouldReplyInMyanmar ? 'my' : 'en'
     });

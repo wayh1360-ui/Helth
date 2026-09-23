@@ -4,18 +4,14 @@ import {
   Send, 
   X, 
   Languages, 
-  Key, 
   AlertTriangle,
   Sparkles,
   Check,
   Copy,
-  Volume2,
-  VolumeX,
   ChevronRight
 } from 'lucide-react';
 import { ChatMessage } from '../types';
-import { TTSButton } from './common/TTSButton';
-import { speakText, stopTTS } from '../utils/speech';
+import { cleanMarkdownText } from '../utils/cleanText';
 
 interface AiAssistantWidgetProps {
   isOpen: boolean;
@@ -33,18 +29,13 @@ export const AiAssistantWidget: React.FC<AiAssistantWidgetProps> = ({
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [chatLanguage, setChatLanguage] = useState<'en' | 'my'>(language);
-  const [openRouterKey, setOpenRouterKey] = useState<string>(() => {
-    return localStorage.getItem('tmhip_openrouter_key') || '';
-  });
-  const [showKeyInput, setShowKeyInput] = useState(false);
-  const [speakingId, setSpeakingId] = useState<string | null>(null);
 
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'welcome-1',
       sender: 'assistant',
-      text: 'Hello! I am HealthGuard, your dedicated health and wellness assistant. How can I help you with your health concerns or home remedies today?',
-      myanmarText: 'မင်္ဂလာပါ။ ကျွန်ုပ်သည် HealthGuard ကျန်းမာရေးနှင့် သုခဆိုင်ရာ အကြံပေး AI ဖြစ်ပါသည်။ ယနေ့ သင်၏ ကျန်းမာရေးဆိုင်ရာ သိလိုသည်များကို မေးမြန်းနိုင်ပါသည်ခင်ဗျာ။',
+      text: 'Hello! I am your Home Health Advisor. How can I help you with your health concerns or home remedies today?',
+      myanmarText: 'မင်္ဂလာပါ။ ကျွန်ုပ်သည် အိမ်တွင်းကုသရေး အကြံပေး AI ဖြစ်ပါသည်။ ယနေ့ သင်၏ ကျန်းမာရေးဆိုင်ရာ သိလိုသည်များကို မေးမြန်းနိုင်ပါသည်ခင်ဗျာ။',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -60,20 +51,6 @@ export const AiAssistantWidget: React.FC<AiAssistantWidgetProps> = ({
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [isOpen, messages]);
-
-  const handleSpeak = (text: string, id: string) => {
-    if (speakingId === id) {
-      stopTTS();
-      setSpeakingId(null);
-      return;
-    }
-    stopTTS();
-    setSpeakingId(id);
-    speakText(text, chatLanguage, {
-      onEnd: () => setSpeakingId(null),
-      onError: () => setSpeakingId(null),
-    });
-  };
 
   useEffect(() => {
     if (isOpen) {
@@ -114,13 +91,11 @@ export const AiAssistantWidget: React.FC<AiAssistantWidgetProps> = ({
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json',
-          ...(openRouterKey ? { 'x-openrouter-key': openRouterKey } : {})
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ 
           message: queryText, 
-          language: chatLanguage,
-          openRouterApiKey: openRouterKey || undefined
+          language: chatLanguage
         }),
       });
 
@@ -134,8 +109,8 @@ export const AiAssistantWidget: React.FC<AiAssistantWidgetProps> = ({
       const assistantMessage: ChatMessage = {
         id: `assistant-${Date.now()}`,
         sender: 'assistant',
-        text: data.response,
-        myanmarText: isBurmese ? undefined : data.myanmarResponse,
+        text: cleanMarkdownText(data.response),
+        myanmarText: isBurmese ? undefined : cleanMarkdownText(data.myanmarResponse || ''),
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
 
@@ -211,18 +186,6 @@ export const AiAssistantWidget: React.FC<AiAssistantWidgetProps> = ({
                 <span>{chatLanguage === 'my' ? 'မြန်မာ' : 'EN'}</span>
               </button>
 
-              {/* OpenRouter Key Toggle */}
-              <button
-                onClick={() => setShowKeyInput((prev) => !prev)}
-                className={`w-7 h-7 rounded-md flex items-center justify-center transition-colors cursor-pointer ${
-                  openRouterKey ? 'bg-emerald-500/20 text-emerald-400' : 'bg-neutral-800 text-neutral-300 hover:text-white'
-                }`}
-                type="button"
-                title="OpenRouter Key Setup"
-              >
-                <Key className="w-3.5 h-3.5" />
-              </button>
-
               {/* Close Button */}
               <button
                 aria-label="Close chat"
@@ -236,40 +199,10 @@ export const AiAssistantWidget: React.FC<AiAssistantWidgetProps> = ({
             </div>
           </div>
 
-          {/* Optional OpenRouter Key Input Banner */}
-          {showKeyInput && (
-            <div className="p-3 bg-neutral-100 dark:bg-neutral-800 border-b border-border-subtle dark:border-neutral-700 text-xs">
-              <label className="block text-[10px] font-bold uppercase text-neutral-500 dark:text-neutral-400 mb-1 font-myanmar">
-                {language === 'my' ? 'OpenRouter API Key (တိုက်ရိုက် AI မေးမြန်းရန်)' : 'OpenRouter Key (for AI replies)'}
-              </label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="password"
-                  placeholder="sk-or-v1-..."
-                  value={openRouterKey}
-                  onChange={(e) => {
-                    setOpenRouterKey(e.target.value);
-                    localStorage.setItem('tmhip_openrouter_key', e.target.value);
-                  }}
-                  className="flex-1 bg-white dark:bg-neutral-900 px-2.5 py-1.5 rounded-lg text-xs border border-border-subtle dark:border-neutral-700 text-black dark:text-white focus:outline-none"
-                />
-                <button
-                  onClick={() => setShowKeyInput(false)}
-                  className="px-2.5 py-1.5 bg-black dark:bg-white text-white dark:text-black rounded-lg text-[11px] font-bold font-myanmar"
-                  type="button"
-                >
-                  {language === 'my' ? 'ပြီးပါပြီ' : 'Done'}
-                </button>
-              </div>
-            </div>
-          )}
-
           {/* Messages Body */}
           <div className="p-3 sm:p-4 flex flex-col gap-3 h-[45vh] sm:h-80 max-h-[480px] overflow-y-auto bg-neutral-50 dark:bg-neutral-950">
             {messages.map((msg) => {
               const isUser = msg.sender === 'user';
-              const textToSpeak = msg.myanmarText ? `${msg.myanmarText}. ${msg.text}` : msg.text;
-              const isSpeaking = speakingId === msg.id;
 
               return (
                 <div
@@ -295,17 +228,6 @@ export const AiAssistantWidget: React.FC<AiAssistantWidgetProps> = ({
                     {!isUser && (
                       <div className="mt-2 pt-1 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between text-[10px] text-neutral-400">
                         <span>{msg.timestamp}</span>
-                        <button
-                          onClick={() => handleSpeak(textToSpeak, msg.id)}
-                          className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded cursor-pointer ${
-                            isSpeaking ? 'bg-amber-500 text-white' : 'text-neutral-500 hover:text-black dark:hover:text-white'
-                          }`}
-                          type="button"
-                          title="Listen"
-                        >
-                          {isSpeaking ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
-                          <span>{isSpeaking ? (language === 'my' ? 'ရပ်မည်' : 'Stop') : (language === 'my' ? 'နားထောင်မည်' : 'Listen')}</span>
-                        </button>
                       </div>
                     )}
                   </div>

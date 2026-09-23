@@ -171,7 +171,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-black dark:text-white comfort:text-[#231f1a] leading-[1.15]">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-black dark:text-white comfort:text-[#231f1a] leading-snug break-words font-myanmar">
               {language === 'my' 
                 ? 'မြန်မာ့တိုင်းရင်းဆေးပညာနှင့် အရေးပေါ်ကျန်းမာရေး သုတဘဏ်' 
                 : 'Traditional Herbal Medicine & Clinical Health Repository'}

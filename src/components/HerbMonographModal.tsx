@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { X, CheckCircle2, AlertTriangle, ShieldCheck, Volume2, VolumeX, Globe } from 'lucide-react';
+import { X, CheckCircle2, AlertTriangle, ShieldCheck, Globe } from 'lucide-react';
 import { Herb } from '../types';
 import { getLocalizedHerbMonograph } from '../lib/myanmarHerbHelper';
-import { speakText, stopTTS } from '../utils/speech';
 
 interface HerbMonographModalProps {
   herb: Herb | null;
@@ -17,60 +16,28 @@ export const HerbMonographModal: React.FC<HerbMonographModalProps> = ({
 }) => {
   // Allow user to switch language directly inside the monograph modal
   const [modalLang, setModalLang] = useState<'en' | 'my'>(language);
-  const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
 
   useEffect(() => {
     setModalLang(language);
   }, [language]);
 
-  // Clean up any ongoing speech synthesis when closing or unmounting
-  useEffect(() => {
-    return () => {
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
-    };
-  }, [herb]);
-
   if (!herb) return null;
 
   const isMyanmar = modalLang === 'my';
-
-  // Comprehensive localized data selector ensuring 100% full Myanmar monographs
   const {
     displayName,
     secondaryName,
-    pharmaceuticalPart,
     chemicalFamily,
+    pharmaceuticalPart,
     primaryDescription,
-    dosage,
-    preparation,
-    clinicalIndication,
-    tags,
     activeCompounds,
     traditionalUses,
+    dosage,
+    preparation,
     contraindications,
+    clinicalIndication,
+    tags
   } = getLocalizedHerbMonograph(herb, modalLang);
-
-  // Audio Speech synthesis toggle
-  const toggleSpeech = () => {
-    if (isSpeaking) {
-      stopTTS();
-      setIsSpeaking(false);
-      return;
-    }
-
-    stopTTS();
-    const textToRead = isMyanmar
-      ? `${herb.myanmarName}။ ${primaryDescription}။ ပုံမှန်သောက်သုံးရန် - ${dosage}။ ဆေးဖော်စပ်ပုံ - ${preparation}။`
-      : `${herb.englishName}, scientifically known as ${herb.scientificName}. ${primaryDescription}. Standard dosage: ${dosage}. Preparation: ${preparation}.`;
-
-    setIsSpeaking(true);
-    speakText(textToRead, modalLang, {
-      onEnd: () => setIsSpeaking(false),
-      onError: () => setIsSpeaking(false),
-    });
-  };
 
   return (
     <div
@@ -121,21 +88,6 @@ export const HerbMonographModal: React.FC<HerbMonographModalProps> = ({
             </div>
 
             <div className="flex items-center gap-2">
-              {/* Speech Narration Button */}
-              <button
-                type="button"
-                onClick={toggleSpeech}
-                className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors cursor-pointer shadow-md ${
-                  isSpeaking
-                    ? 'bg-emerald-600 text-white animate-pulse'
-                    : 'bg-black/60 backdrop-blur-md text-white hover:bg-black/90 border border-white/20'
-                }`}
-                title={isSpeaking ? (isMyanmar ? 'အသံရပ်တန့်မည်' : 'Stop Narration') : (isMyanmar ? 'အသံဖြင့် နားထောင်မည်' : 'Listen to Monograph')}
-                aria-label="Toggle narration"
-              >
-                {isSpeaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-              </button>
-
               {/* Close Button */}
               <button
                 type="button"

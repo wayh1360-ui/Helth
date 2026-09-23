@@ -259,8 +259,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           />
 
           {/* Menu Bar Drawer Container */}
-          <div className="fixed inset-y-0 right-0 max-w-full flex pl-10 z-50">
-            <div className="w-screen max-w-md bg-white dark:bg-neutral-950 comfort:bg-[#faf6ee] shadow-2xl flex flex-col justify-between border-l border-border-subtle dark:border-neutral-800 comfort:border-[#ded4c1] animate-in slide-in-from-right duration-200">
+          <div className="fixed inset-y-0 right-0 max-w-full flex pl-3 sm:pl-10 z-50">
+            <div className="w-[90vw] sm:w-screen max-w-xs sm:max-w-md bg-white dark:bg-neutral-950 comfort:bg-[#faf6ee] shadow-2xl flex flex-col justify-between border-l border-border-subtle dark:border-neutral-800 comfort:border-[#ded4c1] animate-in slide-in-from-right duration-200">
               
               {/* Drawer Top Header */}
               <div className="p-4 sm:p-5 border-b border-border-subtle dark:border-neutral-800 comfort:border-[#ded4c1] flex items-center justify-between bg-neutral-50 dark:bg-neutral-900 comfort:bg-[#f2e9d8]">

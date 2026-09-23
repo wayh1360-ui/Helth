@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   ShieldCheck, 
-  Volume2, 
-  VolumeX, 
   Printer, 
   Pill, 
   Clock, 
@@ -14,7 +12,6 @@ import {
   Sparkles
 } from 'lucide-react';
 import { MedicineAnalysisResult } from '../types';
-import { speakText, stopTTS } from '../utils/speech';
 
 interface MedicineAnalysisCardProps {
   result: MedicineAnalysisResult;
@@ -29,39 +26,7 @@ export const MedicineAnalysisCard: React.FC<MedicineAnalysisCardProps> = ({
   onConsultAiDoctor,
   compact = false
 }) => {
-  const [speaking, setSpeaking] = useState(false);
   const [isLargeFont, setIsLargeFont] = useState(true);
-
-  useEffect(() => {
-    return () => {
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
-    };
-  }, []);
-
-  const handleSpeak = (e?: React.MouseEvent) => {
-    e?.stopPropagation();
-
-    if (speaking) {
-      stopTTS();
-      setSpeaking(false);
-      return;
-    }
-
-    stopTTS();
-
-    const isMy = language === 'my';
-    const textToSpeak = isMy 
-      ? (result.myanmarSummaryForSpeech || `${result.myanmarName || result.medicineName} ဖြစ်ပါသည်။ ${result.myanmarPurpose || result.purpose}။ သောက်သုံးရန်- ${result.myanmarTiming || result.timing}`)
-      : (result.summaryForSpeech || `This is ${result.medicineName}. ${result.purpose}. Instructions: ${result.timing}`);
-
-    setSpeaking(true);
-    speakText(textToSpeak, language, {
-      onEnd: () => setSpeaking(false),
-      onError: () => setSpeaking(false),
-    });
-  };
 
   const handlePrint = (e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -74,7 +39,7 @@ export const MedicineAnalysisCard: React.FC<MedicineAnalysisCardProps> = ({
         isLargeFont ? 'text-base' : 'text-sm'
       }`}
     >
-      {/* Header with Title and Speech Narration */}
+      {/* Header with Title */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 pb-3.5 border-b border-emerald-200 dark:border-emerald-800/60">
         <div>
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold uppercase mb-1.5 font-myanmar">
@@ -96,21 +61,8 @@ export const MedicineAnalysisCard: React.FC<MedicineAnalysisCardProps> = ({
           )}
         </div>
 
-        {/* Action Buttons: Audio Readout & Print */}
+        {/* Action Buttons: Print */}
         <div className="flex items-center gap-2 self-start shrink-0">
-          <button
-            onClick={handleSpeak}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm shadow-xs transition-all font-myanmar cursor-pointer ${
-              speaking 
-                ? 'bg-red-600 text-white animate-pulse' 
-                : 'bg-emerald-600 hover:bg-emerald-700 text-white active:scale-95'
-            }`}
-            title="Read dosage and purpose aloud"
-            type="button"
-          >
-            {speaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-            <span>{speaking ? (language === 'my' ? 'အသံရပ်' : 'Stop') : (language === 'my' ? 'အသံဖြင့် နားထောင်ရန်' : 'Listen')}</span>
-          </button>
 
           {!compact && (
             <button

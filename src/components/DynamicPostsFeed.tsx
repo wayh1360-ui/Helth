@@ -15,8 +15,6 @@ import {
   Loader2,
   Radio,
   Clock,
-  Volume2,
-  VolumeX,
   ShieldCheck,
   Flame,
   ArrowRight,
@@ -51,9 +49,6 @@ export const DynamicPostsFeed: React.FC<DynamicPostsFeedProps> = ({ language, on
   const { user, userName, userEmail, userAvatar, isAdmin, signOut } = useAuth();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [adminNotice, setAdminNotice] = useState<string | null>(null);
-
-  // Speech TTS state
-  const [speakingPostId, setSpeakingPostId] = useState<string | null>(null);
 
   // Edit and Delete states
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
@@ -101,69 +96,8 @@ export const DynamicPostsFeed: React.FC<DynamicPostsFeedProps> = ({ language, on
 
     return () => {
       supabase.removeChannel(channel);
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
     };
   }, []);
-
-  const handleDeletePost = async (postId: string) => {
-    setDeletingPostId(postId);
-    try {
-      const { error } = await supabase
-        .from('posts')
-        .delete()
-        .eq('id', postId);
-
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      setPosts((prev) => prev.filter((p) => p.id !== postId));
-      if (selectedPost?.id === postId) {
-        setSelectedPost(null);
-      }
-      setConfirmDeletePost(null);
-    } catch (err: any) {
-      console.error('Delete error:', err);
-      // If it's a seed post or table error, still filter from local state
-      setPosts((prev) => prev.filter((p) => p.id !== postId));
-      if (selectedPost?.id === postId) {
-        setSelectedPost(null);
-      }
-      setConfirmDeletePost(null);
-    } finally {
-      setDeletingPostId(null);
-    }
-  };
-
-  // Text-To-Speech handler for posts
-  const handleToggleSpeech = (text: string, id: string) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-
-    if (speakingPostId === id) {
-      window.speechSynthesis.cancel();
-      setSpeakingPostId(null);
-      return;
-    }
-
-    window.speechSynthesis.cancel();
-    setSpeakingPostId(id);
-
-    const clean = text.replace(/[*#_~`[\]()]/g, ' ').trim();
-    const utterance = new SpeechSynthesisUtterance(clean);
-    utterance.rate = 0.9; // steady, senior-accessible pace
-    utterance.pitch = 1.0;
-
-    const voices = window.speechSynthesis.getVoices();
-    const myVoice = voices.find(v => v.lang.startsWith('my') || v.lang.includes('burmese'));
-    if (myVoice) utterance.voice = myVoice;
-
-    utterance.onend = () => setSpeakingPostId(null);
-    utterance.onerror = () => setSpeakingPostId(null);
-
-    window.speechSynthesis.speak(utterance);
-  };
 
   const handleShare = (post: Post) => {
     const cleanTitle = cleanPostTitle(post.title);
@@ -177,6 +111,24 @@ export const DynamicPostsFeed: React.FC<DynamicPostsFeedProps> = ({ language, on
       navigator.clipboard.writeText(`${cleanTitle}\n\n${post.content}`);
       setCopiedId(post.id);
       setTimeout(() => setCopiedId(null), 2000);
+    }
+  };
+
+  const handleDeletePost = async (id: string) => {
+    setDeletingPostId(id);
+    try {
+      const { error } = await supabase.from('posts').delete().eq('id', id);
+      if (error) {
+        console.error('Delete error:', error);
+      } else {
+        setPosts((prev) => prev.filter((p) => p.id !== id));
+        if (selectedPost?.id === id) setSelectedPost(null);
+        setConfirmDeletePost(null);
+      }
+    } catch (err) {
+      console.error('Delete exception:', err);
+    } finally {
+      setDeletingPostId(null);
     }
   };
 
@@ -326,28 +278,6 @@ export const DynamicPostsFeed: React.FC<DynamicPostsFeedProps> = ({ language, on
             </div>
 
             <div className="flex flex-wrap items-center gap-2.5 shrink-0 w-full lg:w-auto pt-2 lg:pt-0 border-t lg:border-t-0 border-amber-500/20">
-              <button
-                type="button"
-                onClick={() => handleToggleSpeech(todayBulletin.content, `speech-${todayBulletin.id}`)}
-                className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-xs ${
-                  speakingPostId === `speech-${todayBulletin.id}`
-                    ? 'bg-red-600 text-white animate-pulse'
-                    : 'bg-white dark:bg-neutral-800 comfort:bg-[#faf6ee] text-black dark:text-white comfort:text-[#231f1a] border border-border-subtle dark:border-neutral-700'
-                }`}
-              >
-                {speakingPostId === `speech-${todayBulletin.id}` ? (
-                  <>
-                    <VolumeX className="w-4 h-4" />
-                    <span className="font-myanmar">{language === 'my' ? 'ရပ်တန့်မည်' : 'Stop Audio'}</span>
-                  </>
-                ) : (
-                  <>
-                    <Volume2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                    <span className="font-myanmar">{language === 'my' ? 'အသံဖြင့် နားထောင်ရန်' : 'Listen Aloud'}</span>
-                  </>
-                )}
-              </button>
-
               <button
                 type="button"
                 onClick={() => setSelectedPost(todayBulletin)}
@@ -573,24 +503,6 @@ export const DynamicPostsFeed: React.FC<DynamicPostsFeedProps> = ({ language, on
                   </button>
 
                   <div className="flex items-center gap-1">
-                    {/* Audio Read-Aloud Button */}
-                    <button
-                      type="button"
-                      onClick={() => handleToggleSpeech(post.content, `speech-${post.id}`)}
-                      className={`p-1.5 rounded-lg transition cursor-pointer ${
-                        speakingPostId === `speech-${post.id}`
-                          ? 'text-red-600 bg-red-50 dark:bg-red-950/40 animate-pulse'
-                          : 'text-neutral-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-neutral-100 dark:hover:bg-neutral-800'
-                      }`}
-                      title={language === 'my' ? 'အသံဖြင့် နားထောင်ရန်' : 'Listen Aloud'}
-                    >
-                      {speakingPostId === `speech-${post.id}` ? (
-                        <VolumeX className="w-4 h-4 text-red-600" />
-                      ) : (
-                        <Volume2 className="w-4 h-4" />
-                      )}
-                    </button>
-
                     {/* Edit Post Button */}
                     {/* Admin Edit and Delete Buttons: Conditionally rendered only if user's email exists in VITE_ADMIN_EMAILS */}
                     {isAdmin && (
@@ -681,29 +593,6 @@ export const DynamicPostsFeed: React.FC<DynamicPostsFeedProps> = ({ language, on
               {/* Action Bar inside detail */}
               <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-border-subtle dark:border-neutral-800 comfort:border-[#ded4c1]">
                 <div className="flex items-center gap-2">
-                  {/* TTS Voice Read Aloud */}
-                  <button
-                    type="button"
-                    onClick={() => handleToggleSpeech(selectedPost.content, `detail-speech-${selectedPost.id}`)}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer font-myanmar ${
-                      speakingPostId === `detail-speech-${selectedPost.id}`
-                        ? 'bg-red-600 text-white animate-pulse'
-                        : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-200'
-                    }`}
-                  >
-                    {speakingPostId === `detail-speech-${selectedPost.id}` ? (
-                      <>
-                        <VolumeX className="w-3.5 h-3.5" />
-                        <span>{language === 'my' ? 'ရပ်မည်' : 'Stop'}</span>
-                      </>
-                    ) : (
-                      <>
-                        <Volume2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                        <span>{language === 'my' ? 'အသံဖြင့် နားထောင်မည်' : 'Listen Aloud'}</span>
-                      </>
-                    )}
-                  </button>
-
                   {/* Admin Edit and Delete inside Post Detail Modal */}
                   {isAdmin && (
                     <>
@@ -744,13 +633,7 @@ export const DynamicPostsFeed: React.FC<DynamicPostsFeedProps> = ({ language, on
 
                   <button
                     type="button"
-                    onClick={() => {
-                      if (speakingPostId) {
-                        window.speechSynthesis.cancel();
-                        setSpeakingPostId(null);
-                      }
-                      setSelectedPost(null);
-                    }}
+                    onClick={() => setSelectedPost(null)}
                     className="px-5 py-2 rounded-xl bg-black text-white dark:bg-white dark:text-black comfort:bg-[#231f1a] comfort:text-[#faf6ee] text-xs font-bold cursor-pointer"
                   >
                     {language === 'my' ? 'ပိတ်မည်' : 'Close'}

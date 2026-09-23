@@ -9,37 +9,31 @@ import {
   Check, 
   Copy, 
   SlidersHorizontal,
-  Volume2, 
-  VolumeX, 
-  ArrowDown, 
-  ArrowUp,
-  RefreshCw, 
-  Camera, 
-  Pill, 
-  Stethoscope,
+  HeartPulse,
+  Pill,
+  ShieldAlert,
+  PanelLeftClose,
+  PanelLeft,
   Plus,
   Search,
-  PanelLeft,
-  PanelLeftClose,
+  MessageSquare,
   Trash2,
-  Image as ImageIcon,
-  X,
-  Mic,
-  MicOff,
-  ThumbsUp,
   Clock,
-  HeartPulse,
-  Flame,
-  ShieldAlert,
-  ChevronRight,
+  Camera,
   UploadCloud,
-  FileText,
-  History,
-  MessageSquare
+  X,
+  RefreshCw,
+  ChevronRight,
+  ThumbsUp,
+  ArrowDown,
+  ArrowUp,
+  History as HistoryIcon
 } from 'lucide-react';
 import { ChatMessage, ChatSession, MedicineAnalysisResult } from '../types';
 import { MedicineAnalysisCard } from './MedicineAnalysisCard';
 import { DEFAULT_CONSULTATION_HISTORY } from '../data/consultationHistory';
+import { cleanMarkdownText } from '../utils/cleanText';
+import { useAuth } from '../hooks/useAuth';
 
 export interface StoredConsultation {
   id: string;
@@ -71,6 +65,7 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
   history = DEFAULT_CONSULTATION_HISTORY,
   onSelectHistoryItem
 }) => {
+  const { isAdmin } = useAuth();
   const [chatLanguage, setChatLanguage] = useState<'en' | 'my'>(language);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -93,8 +88,6 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
   });
   const [showConfig, setShowConfig] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [speakingId, setSpeakingId] = useState<string | null>(null);
-  const [isListening, setIsListening] = useState(false);
   const [showScrollBottom, setShowScrollBottom] = useState(false);
   const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
 
@@ -193,7 +186,6 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const speechRecognitionRef = useRef<any>(null);
 
   // Sync language prop
   useEffect(() => {
@@ -250,69 +242,6 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
     }
   }, [messages, loading, showScrollBottom]);
 
-  // Cleanup speech synthesis on unmount
-  useEffect(() => {
-    return () => {
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
-      if (speechRecognitionRef.current) {
-        try {
-          speechRecognitionRef.current.stop();
-        } catch (_) {}
-      }
-    };
-  }, []);
-
-  // Web Speech API for voice speech-to-text
-  const toggleSpeechRecognition = () => {
-    if (typeof window === 'undefined') return;
-
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      alert(chatLanguage === 'my' ? 'သင့်ဘရောက်ဆာတွင် အသံဖြင့် စာရိုက်ခြင်း (Speech Recognition) မထောက်ပံ့သေးပါ' : 'Speech recognition is not supported in this browser.');
-      return;
-    }
-
-    if (isListening) {
-      speechRecognitionRef.current?.stop();
-      setIsListening(false);
-      return;
-    }
-
-    try {
-      const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.lang = chatLanguage === 'my' ? 'my-MM' : 'en-US';
-
-      recognition.onstart = () => {
-        setIsListening(true);
-      };
-
-      recognition.onresult = (event: any) => {
-        const transcript = event.results[0]?.[0]?.transcript;
-        if (transcript) {
-          setInput((prev) => (prev ? `${prev} ${transcript}` : transcript));
-        }
-      };
-
-      recognition.onerror = () => {
-        setIsListening(false);
-      };
-
-      recognition.onend = () => {
-        setIsListening(false);
-      };
-
-      speechRecognitionRef.current = recognition;
-      recognition.start();
-    } catch (e) {
-      console.warn('Speech recognition start error:', e);
-      setIsListening(false);
-    }
-  };
-
   // Scroll detection
   const handleScroll = () => {
     if (!chatContainerRef.current) return;
@@ -335,10 +264,6 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
     setAttachedImage(null);
     setAttachedImageName(null);
     setIsCameraMenuOpen(false);
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      setSpeakingId(null);
-    }
   };
 
   // Switch to an existing session
@@ -348,10 +273,6 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
     setAttachedImage(null);
     setAttachedImageName(null);
     setIsCameraMenuOpen(false);
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      setSpeakingId(null);
-    }
   };
 
   // Delete a session
@@ -695,31 +616,7 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
     }
   };
 
-  // Text-to-speech audio reader
-  const handleReadAloud = (text: string, id: string) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
 
-    if (speakingId === id) {
-      window.speechSynthesis.cancel();
-      setSpeakingId(null);
-      return;
-    }
-
-    window.speechSynthesis.cancel();
-    setSpeakingId(id);
-
-    const cleanText = text.replace(/[*#_`]/g, '');
-    const isBurmese = /[\u1000-\u109F]/.test(cleanText);
-
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.rate = 0.85;
-    utterance.lang = isBurmese ? 'my-MM' : 'en-US';
-
-    utterance.onend = () => setSpeakingId(null);
-    utterance.onerror = () => setSpeakingId(null);
-
-    window.speechSynthesis.speak(utterance);
-  };
 
   // Copy helper
   const copyToClipboard = (text: string, id: string) => {
@@ -900,17 +797,19 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
                 {chatLanguage === 'my' ? 'အိမ်တွင်းကုသမှုအကြံပေး' : 'Home Treatment Advisor'}
               </span>
 
-              {/* Minimal Model Badge / Config Trigger */}
-              <button
-                onClick={() => setShowConfig((prev) => !prev)}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200/70 dark:hover:bg-neutral-700/70 text-neutral-600 dark:text-neutral-300 text-xs font-medium transition-colors cursor-pointer"
-                title="Model Settings"
-                type="button"
-              >
-                <Sparkles className="w-3 h-3 text-purple-500" />
-                <span className="text-[11px] font-mono">Gemini 2.5</span>
-                <SlidersHorizontal className="w-3 h-3 opacity-60" />
-              </button>
+              {/* Minimal Model Badge / Config Trigger (Admin Only) */}
+              {isAdmin && (
+                <button
+                  onClick={() => setShowConfig((prev) => !prev)}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200/70 dark:hover:bg-neutral-700/70 text-neutral-600 dark:text-neutral-300 text-xs font-medium transition-colors cursor-pointer"
+                  title="Model Settings (Admin)"
+                  type="button"
+                >
+                  <Sparkles className="w-3 h-3 text-purple-500" />
+                  <span className="text-[11px] font-mono">Gemini 2.5</span>
+                  <SlidersHorizontal className="w-3 h-3 opacity-60" />
+                </button>
+              )}
             </div>
           </div>
 
@@ -940,14 +839,14 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
           </div>
         </div>
 
-        {/* AI Key Configuration Bar (Collapsible) */}
-        {showConfig && (
+        {/* AI Key Configuration Bar (Collapsible - Admin Only) */}
+        {isAdmin && showConfig && (
           <div className="p-4 bg-neutral-50 dark:bg-neutral-950 border-b border-neutral-200 dark:border-neutral-800 animate-in fade-in duration-150">
             <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center gap-3">
               <div className="flex-1 w-full">
                 <div className="flex items-center justify-between mb-1">
                   <label className="text-[11px] font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
-                    OpenRouter API Key (Optional)
+                    Admin OpenRouter Key Override (Optional)
                   </label>
                   <button 
                     onClick={() => setShowConfig(false)}
@@ -1308,20 +1207,6 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
                           <Camera className="w-4 h-4 sm:w-5 sm:h-5" />
                         </button>
 
-                        {/* Mic Voice Dictation Trigger */}
-                        <button
-                          onClick={toggleSpeechRecognition}
-                          className={`p-2 sm:p-2.5 rounded-full transition-colors cursor-pointer shrink-0 ${
-                            isListening 
-                              ? 'bg-red-600 text-white animate-pulse' 
-                              : 'text-neutral-500 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800'
-                          }`}
-                          title={isListening ? 'Stop listening' : 'Speak with microphone'}
-                          type="button"
-                        >
-                          {isListening ? <MicOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Mic className="w-4 h-4 sm:w-5 sm:h-5" />}
-                        </button>
-
                         {/* Primary Search / Ask Action Button */}
                         <button
                           onClick={() => handleSendMessage()}
@@ -1378,7 +1263,7 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
                   {revisitedConsultationTitle && (
                     <div className="px-3.5 py-2.5 rounded-2xl bg-neutral-100 dark:bg-neutral-800/80 border border-neutral-200/80 dark:border-neutral-700/80 flex items-center justify-between gap-3 text-xs font-myanmar">
                       <div className="flex items-center gap-2 min-w-0">
-                        <History className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                        <HistoryIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                         <span className="text-neutral-500 dark:text-neutral-400 truncate">
                           {revisitedConsultationTitle}
                         </span>
@@ -1395,7 +1280,6 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
 
                   {messages.map((msg) => {
                     const isUser = msg.sender === 'user';
-                    const isSpeaking = speakingId === msg.id;
 
                     if (isUser) {
                       return (
@@ -1475,20 +1359,6 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
 
                           {/* Minimal Action Toolbar */}
                           <div className="flex items-center gap-1 text-neutral-400 pt-0.5">
-                            {/* Read Aloud */}
-                            <button
-                              onClick={() => handleReadAloud(msg.text, msg.id)}
-                              className={`p-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
-                                isSpeaking 
-                                  ? 'text-red-500 bg-red-50 dark:bg-red-950/40' 
-                                  : 'hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800'
-                              }`}
-                              title="Listen"
-                              type="button"
-                            >
-                              {isSpeaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-                            </button>
-
                             {/* Copy */}
                             <button
                               onClick={() => copyToClipboard(msg.text, msg.id)}
@@ -1708,20 +1578,6 @@ export const AssistantSection: React.FC<AssistantSectionProps> = ({
                     rows={1}
                     className="flex-1 bg-transparent py-2.5 text-xs sm:text-sm text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 focus:outline-none resize-none font-myanmar max-h-32 leading-relaxed"
                   />
-
-                  {/* Voice Microphone Dictation Button */}
-                  <button
-                    onClick={toggleSpeechRecognition}
-                    className={`p-2 sm:p-2.5 rounded-full transition-colors cursor-pointer shrink-0 ${
-                      isListening 
-                        ? 'bg-red-600 text-white animate-pulse' 
-                        : 'text-neutral-500 hover:text-black dark:hover:text-white hover:bg-neutral-200/60 dark:hover:bg-neutral-700/60'
-                    }`}
-                    title={isListening ? 'Stop listening' : 'Speak with microphone'}
-                    type="button"
-                  >
-                    {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-                  </button>
 
                   {/* Gemini Iconic Circular Up-Arrow Send Button */}
                   <button
