@@ -16,20 +16,23 @@ export { useAuth } from '../hooks/useAuth';
 // Built-in default admin emails (can be extended via VITE_ADMIN_EMAILS in .env)
 const DEFAULT_ADMIN_EMAILS = [
   'wayh1360@gmail.com',
+  'zawyannaing.yanrx4@gmail.com',
 ];
 
 /**
  * Get all configured admin emails (from env or defaults)
  */
 export function getAdminEmails(): string[] {
-  const envAdmins = import.meta.env.VITE_ADMIN_EMAILS
-    ? String(import.meta.env.VITE_ADMIN_EMAILS)
-        .split(',')
-        .map((e: string) => e.trim().toLowerCase())
-        .filter(Boolean)
-    : [];
+  const envRaw = import.meta.env.VITE_ADMIN_EMAILS ? String(import.meta.env.VITE_ADMIN_EMAILS) : '';
+  const envAdmins = envRaw
+    .split(',')
+    .map((e: string) => e.replace(/['"]/g, '').trim().toLowerCase())
+    .filter(Boolean);
   
-  const set = new Set([...DEFAULT_ADMIN_EMAILS.map(e => e.toLowerCase()), ...envAdmins]);
+  const set = new Set([
+    ...DEFAULT_ADMIN_EMAILS.map(e => e.replace(/['"]/g, '').trim().toLowerCase()), 
+    ...envAdmins
+  ]);
   return Array.from(set);
 }
 

@@ -32,6 +32,7 @@ export interface UseAuthReturn {
 // Fallback admin emails if env variable is not populated
 const DEFAULT_ADMIN_EMAILS = [
   'wayh1360@gmail.com',
+  'zawyannaing.yanrx4@gmail.com',
 ];
 
 /**
@@ -46,10 +47,13 @@ export function getAdminEmails(): string[] {
 
   const envList = String(envRaw)
     .split(',')
-    .map((e) => e.trim().toLowerCase())
+    .map((e) => e.replace(/['"]/g, '').trim().toLowerCase())
     .filter(Boolean);
 
-  const combined = new Set([...DEFAULT_ADMIN_EMAILS.map((e) => e.toLowerCase()), ...envList]);
+  const combined = new Set([
+    ...DEFAULT_ADMIN_EMAILS.map((e) => e.replace(/['"]/g, '').trim().toLowerCase()), 
+    ...envList
+  ]);
   return Array.from(combined);
 }
 
