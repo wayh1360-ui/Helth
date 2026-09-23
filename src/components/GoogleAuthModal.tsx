@@ -321,8 +321,24 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
               {/* Notification Alerts */}
               {errorMessage && (
                 <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 text-xs flex items-start gap-2.5 font-myanmar leading-relaxed">
-                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                  <div className="flex-1">{errorMessage}</div>
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-600" />
+                  <div className="flex-1 space-y-1">
+                    <div className="font-bold">{errorMessage}</div>
+                    {(errorMessage.toLowerCase().includes('api key') || errorMessage.includes('401') || errorMessage.includes('invalid')) && (
+                      <div className="text-[11px] text-red-800 dark:text-red-200 mt-1 font-myanmar bg-red-100 dark:bg-red-900/40 p-2 rounded-xl border border-red-300 dark:border-red-800">
+                        {language === 'my' 
+                          ? '💡 .env ဖိုင်ရှိ VITE_SUPABASE_ANON_KEY တွင် သင့် Supabase Dashboard > Project Settings > API မှ ရယူထားသော JWT Anon Key (eyJhbGci...) အမှန်ကို ထည့်သွင်းပေးပါရန်။' 
+                          : '💡 Please update VITE_SUPABASE_ANON_KEY in .env with your valid JWT anon key (eyJhbGci...) from Supabase Dashboard > Project Settings > API.'}
+                      </div>
+                    )}
+                    {(errorMessage.toLowerCase().includes('not enabled') || errorMessage.toLowerCase().includes('provider') || errorMessage.toLowerCase().includes('oauth')) && (
+                      <div className="text-[11px] text-red-800 dark:text-red-200 mt-1 font-myanmar bg-red-100 dark:bg-red-900/40 p-2 rounded-xl border border-red-300 dark:border-red-800">
+                        {language === 'my'
+                          ? '💡 Supabase Dashboard > Authentication > Providers > Google တွင် Google Provider ကို ဖွင့်ပြီး Client ID & Client Secret ထည့်ပေးရန် လိုအပ်ပါသည်။'
+                          : '💡 Enable Google Provider in Supabase Dashboard > Authentication > Providers > Google with your Client ID & Client Secret.'}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
