@@ -221,11 +221,15 @@ export function useAuth(): UseAuthReturn {
   const signInWithGoogle = useCallback(async (): Promise<{ error: string | null }> => {
     setError(null);
     try {
-      const redirectUrl = typeof window !== 'undefined' ? window.location.origin : '';
+      const redirectUrl = typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.host}` : '';
       const { error: signInError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: redirectUrl,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          }
         },
       });
 
